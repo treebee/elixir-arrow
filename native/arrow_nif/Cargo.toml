@@ -1,0 +1,14 @@
+[package]
+name = "arrow_nif"
+version = "0.1.0"
+authors = ["Patrick Mühlbauer <pm.muehlbauer@googlemail.com>"]
+edition = "2018"
+
+[lib]
+name = "arrow_nif"
+path = "src/lib.rs"
+crate-type = ["dylib"]
+
+[dependencies]
+rustler = "0.22.0-rc.0"
+arrow = "3.0.0"
