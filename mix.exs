@@ -32,7 +32,7 @@ defmodule ArrowElixir.MixProject do
 
   defp rustler_crates() do
     [
-      parquet_nif: [
+      arrow_nif: [
         path: "native/arrow_nif",
         mode: rustc_mode(Mix.env())
       ]

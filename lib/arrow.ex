@@ -1,6 +1,6 @@
 defmodule Arrow do
   @moduledoc """
-  Documentation for `Arrow`.
+  `Apache Arrow` for Elixir.
   """
   use Rustler, otp_app: :arrow, crate: "arrow_nif"
 
@@ -14,20 +14,25 @@ defmodule Arrow do
 
   def array(arg, opts) do
     type = Arrow.Type.normalize!(opts[:type] || Arrow.Type.infer(arg))
-    %Array{array: make_array(arg, type), type: type}
+
+    arr =
+      case type do
+        {:f, _} -> Enum.map(arg, &to_float/1)
+        _ -> arg
+      end
+
+    %Array{array: make_array(arr, type), type: type}
   end
 
-  def make_int64_array(_arg), do: error()
-  def make_uint32_array(_arg), do: error()
+  def sum(_arg, _type), do: error()
 
-  def sum(_arg), do: error()
+  def to_list(_arg, _type), do: error()
 
-  def to_list(_arg), do: error()
+  def len(_arg, _type), do: error()
 
-  def len(_arg), do: error()
-
-  defp make_array(arg, {:s, 64}), do: make_int64_array(arg)
-  defp make_array(arg, {:u, 32}), do: make_uint32_array(arg)
+  def make_array(_arg, _type), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
+
+  defp to_float(x), do: x / 1
 end
