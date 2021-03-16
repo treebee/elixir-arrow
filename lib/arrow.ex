@@ -32,6 +32,10 @@ defmodule Arrow do
 
   def make_array(_arg, _type), do: error()
 
+  def get_field(), do: error()
+
+  def echo_field(_field), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 
   defp to_float(x), do: x / 1
