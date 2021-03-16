@@ -3,11 +3,30 @@ use crate::array::{
     Int32ArrayResource, Int64ArrayResource, UInt32ArrayResource,
 };
 use crate::field::XField;
+use crate::schema::MetaData;
+use crate::schema::XSchema;
 use arrow::datatypes::{DataType, Field};
 use rustler::{Env, Term};
 
 pub fn on_load(_env: Env) -> bool {
     true
+}
+
+#[rustler::nif]
+fn get_schema() -> XSchema {
+    let f = Field::new("my_field", DataType::Int64, false);
+    let xf = XField::from_arrow(f);
+    XSchema {
+        fields: vec![xf],
+        metadata: MetaData::new(),
+    }
+}
+
+#[rustler::nif]
+fn echo_schema(schema: XSchema) -> XSchema {
+    let s = schema.to_arrow();
+    println!("schema: {:?}", s);
+    schema
 }
 
 #[rustler::nif]
@@ -36,9 +55,19 @@ fn load(env: Env, _: Term) -> bool {
 
 rustler::init!(
     "Elixir.Arrow",
-    [make_array, sum, len, to_list, get_field, echo_field],
+    [
+        make_array,
+        sum,
+        len,
+        to_list,
+        get_field,
+        echo_field,
+        get_schema,
+        echo_schema
+    ],
     load = load
 );
 
 mod array;
 mod field;
+mod schema;
