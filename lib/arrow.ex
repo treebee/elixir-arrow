@@ -36,13 +36,33 @@ defmodule Arrow do
 
   def echo_field(_field), do: error()
 
-  def get_schema(), do: error()
+  def get_schema(_table), do: error()
 
   def echo_schema(_schema), do: error()
 
   def get_table(_schema), do: error()
 
   def print_table(_table), do: error()
+
+  defp is_float_type({:f, _}), do: true
+  defp is_float_type(_), do: false
+
+  defp prepare_column(%{data_type: dtype}, column) do
+    cond do
+      is_float_type(dtype) -> Enum.map(column, &to_float/1)
+      true -> column
+    end
+  end
+
+  def table(schema, columns) do
+    columns =
+      for {field, column} <- List.zip([schema.fields, columns]),
+          do: prepare_column(field, column)
+
+    %Arrow.Table{reference: make_table(schema, columns)}
+  end
+
+  def make_table(_schema, _columns), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 

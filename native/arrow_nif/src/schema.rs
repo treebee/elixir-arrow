@@ -5,12 +5,6 @@ use std::collections::HashMap;
 
 pub struct MetaData(HashMap<String, String>);
 
-impl MetaData {
-    pub fn new() -> Self {
-        Self(HashMap::new())
-    }
-}
-
 #[derive(NifStruct)]
 #[module = "Arrow.Schema"]
 pub struct XSchema {
@@ -25,6 +19,17 @@ impl XSchema {
             self.fields.iter().map(|field| field.to_arrow()).collect(),
             metadata,
         )
+    }
+
+    pub fn from_arrow(schema: &Schema) -> Self {
+        XSchema {
+            fields: schema
+                .fields()
+                .iter()
+                .map(|field| XField::from_arrow(field.clone()))
+                .collect(),
+            metadata: MetaData(schema.metadata().clone()),
+        }
     }
 }
 

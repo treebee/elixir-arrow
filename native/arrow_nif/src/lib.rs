@@ -15,8 +15,8 @@ use crate::array::{
     Int32ArrayResource, Int64ArrayResource, UInt32ArrayResource,
 };
 use crate::field::XField;
-use crate::schema::{MetaData, XSchema};
-use crate::table::{get_table, print_table, TableResource};
+use crate::schema::XSchema;
+use crate::table::{get_schema, get_table, make_table, print_table, TableResource};
 
 mod atoms {
     rustler::atoms! {
@@ -31,16 +31,6 @@ mod atoms {
         s,
         f,
         u,
-    }
-}
-
-#[rustler::nif]
-fn get_schema() -> XSchema {
-    let f = Field::new("my_field", DataType::Int64, false);
-    let xf = XField::from_arrow(f);
-    XSchema {
-        fields: vec![xf],
-        metadata: MetaData::new(),
     }
 }
 
@@ -98,6 +88,7 @@ rustler::init!(
         echo_schema,
         get_table,
         print_table,
+        make_table,
     ],
     load = load
 );
