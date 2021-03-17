@@ -49,33 +49,15 @@ impl Encoder for ArrayResource {
     }
 }
 
-pub enum XDataType {
-    Int32,
-    Int64,
-    UInt32,
-    Float32,
-    Float64,
-}
+pub struct XDataType(pub DataType);
 
 impl XDataType {
     pub fn from_arrow(data_type: &DataType) -> Self {
-        match data_type {
-            &DataType::Int32 => XDataType::Int32,
-            &DataType::Int64 => XDataType::Int64,
-            &DataType::Float32 => XDataType::Float32,
-            &DataType::Float64 => XDataType::Float64,
-            &DataType::UInt32 => XDataType::UInt32,
-            _ => XDataType::Float64,
-        }
+        let dtype = data_type.clone();
+        XDataType(dtype)
     }
-    pub fn to_arrow(&self) -> DataType {
-        match self {
-            XDataType::Int32 => DataType::Int32,
-            XDataType::Int64 => DataType::Int64,
-            XDataType::Float32 => DataType::Float32,
-            XDataType::Float64 => DataType::Float64,
-            XDataType::UInt32 => DataType::UInt32,
-        }
+    pub fn to_arrow(&self) -> &DataType {
+        &self.0
     }
 }
 
@@ -97,12 +79,13 @@ pub enum ArrayValues {
 
 impl Encoder for XDataType {
     fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
-        match self {
-            XDataType::Int32 => (atoms::s(), 32).encode(env),
-            XDataType::Int64 => (atoms::s(), 64).encode(env),
-            XDataType::UInt32 => (atoms::u(), 32).encode(env),
-            XDataType::Float32 => (atoms::f(), 32).encode(env),
-            XDataType::Float64 => (atoms::f(), 64).encode(env),
+        match &self.0 {
+            DataType::Int32 => (atoms::s(), 32).encode(env),
+            DataType::Int64 => (atoms::s(), 64).encode(env),
+            DataType::UInt32 => (atoms::u(), 32).encode(env),
+            DataType::Float32 => (atoms::f(), 32).encode(env),
+            DataType::Float64 => (atoms::f(), 64).encode(env),
+            _ => (atoms::error(), 0).encode(env),
         }
     }
 }
@@ -164,108 +147,112 @@ impl Float32ArrayResource {
 #[rustler::nif]
 fn make_array(a: Term, b: Term) -> ArrayResource {
     let dtype = convert_to_datatype(b).unwrap();
-    match dtype {
-        XDataType::Int32 => {
+    match &dtype.0 {
+        DataType::Int32 => {
             let values: Vec<i32> = a.decode().unwrap();
             ArrayResource::Int32(ResourceArc::new(Int32ArrayResource::new(values)))
         }
-        XDataType::Int64 => {
+        DataType::Int64 => {
             let values: Vec<i64> = a.decode().unwrap();
             ArrayResource::Int64(ResourceArc::new(Int64ArrayResource::new(values)))
         }
-        XDataType::UInt32 => {
+        DataType::UInt32 => {
             let values: Vec<u32> = a.decode().unwrap();
             ArrayResource::UInt32(ResourceArc::new(UInt32ArrayResource::new(values)))
         }
-        XDataType::Float32 => {
+        DataType::Float32 => {
             let values: Vec<f32> = a.decode().unwrap();
             ArrayResource::Float32(ResourceArc::new(Float32ArrayResource::new(values)))
         }
-        XDataType::Float64 => {
+        DataType::Float64 => {
             let values: Vec<f64> = a.decode().unwrap();
             ArrayResource::Float64(ResourceArc::new(Float64ArrayResource::new(values)))
         }
+        _ => ArrayResource::Int64(ResourceArc::new(Int64ArrayResource::new(vec![]))),
     }
 }
 
 #[rustler::nif]
 fn to_list(arr: Term, data_type: Term) -> ArrayValues {
     let dtype = convert_to_datatype(data_type).unwrap();
-    match dtype {
-        XDataType::Int32 => {
+    match &dtype.0 {
+        DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
             ArrayValues::Int32(array.0.values().to_vec())
         }
-        XDataType::Int64 => {
+        DataType::Int64 => {
             let array: ResourceArc<Int64ArrayResource> = arr.decode().unwrap();
             ArrayValues::Int64(array.0.values().to_vec())
         }
-        XDataType::UInt32 => {
+        DataType::UInt32 => {
             let array: ResourceArc<UInt32ArrayResource> = arr.decode().unwrap();
             ArrayValues::UInt32(array.0.values().to_vec())
         }
-        XDataType::Float32 => {
+        DataType::Float32 => {
             let array: ResourceArc<Float32ArrayResource> = arr.decode().unwrap();
             ArrayValues::Float32(array.0.values().to_vec())
         }
-        XDataType::Float64 => {
+        DataType::Float64 => {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
             ArrayValues::Float64(array.0.values().to_vec())
         }
+        _ => ArrayValues::Int64(vec![]),
     }
 }
 
 #[rustler::nif]
 fn sum(arr: Term, data_type: Term) -> PrimitiveValue {
     let dtype = convert_to_datatype(data_type).unwrap();
-    match dtype {
-        XDataType::Int32 => {
+    match dtype.0 {
+        DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::Int32(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
         }
-        XDataType::Int64 => {
+        DataType::Int64 => {
             let array: ResourceArc<Int64ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::Int64(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
         }
-        XDataType::UInt32 => {
+        DataType::UInt32 => {
             let array: ResourceArc<UInt32ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::UInt32(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
         }
-        XDataType::Float32 => {
+        DataType::Float32 => {
             let array: ResourceArc<Float32ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::Float32(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
         }
-        XDataType::Float64 => {
+        DataType::Float64 => {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::Float64(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
         }
+        _ => PrimitiveValue::Int32(0),
     }
 }
 
 #[rustler::nif]
 fn len(arr: Term, data_type: Term) -> usize {
     let dtype = convert_to_datatype(data_type).unwrap();
-    match dtype {
-        XDataType::Int32 => {
+    match &dtype.0 {
+        DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
             array.0.len()
         }
-        XDataType::Int64 => {
+        DataType::Int64 => {
             let array: ResourceArc<Int64ArrayResource> = arr.decode().unwrap();
             array.0.len()
         }
-        XDataType::UInt32 => {
+        DataType::UInt32 => {
             let array: ResourceArc<UInt32ArrayResource> = arr.decode().unwrap();
             array.0.len()
         }
-        XDataType::Float32 => {
+        DataType::Float32 => {
             let array: ResourceArc<Float32ArrayResource> = arr.decode().unwrap();
             array.0.len()
         }
-        XDataType::Float64 => {
+        DataType::Float64 => {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
             array.0.len()
         }
+        _ => 0,
     }
 }
 
@@ -273,19 +260,19 @@ fn convert_to_datatype(term: Term) -> Option<XDataType> {
     let (t, s): (Atom, usize) = term.decode().unwrap();
     if t == atoms::s() {
         match s {
-            32 => Some(XDataType::Int32),
-            64 => Some(XDataType::Int64),
+            32 => Some(XDataType(DataType::Int32)),
+            64 => Some(XDataType(DataType::Int64)),
             _ => None,
         }
     } else if t == atoms::f() {
         match s {
-            32 => Some(XDataType::Float32),
-            64 => Some(XDataType::Float64),
+            32 => Some(XDataType(DataType::Float32)),
+            64 => Some(XDataType(DataType::Float64)),
             _ => None,
         }
     } else if t == atoms::u() {
         match s {
-            32 => Some(XDataType::UInt32),
+            32 => Some(XDataType(DataType::UInt32)),
             _ => None,
         }
     } else {

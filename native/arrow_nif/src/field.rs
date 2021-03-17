@@ -29,6 +29,7 @@ impl XField {
     }
 
     pub fn to_arrow(&self) -> Field {
-        Field::new(self.name.as_str(), self.data_type.to_arrow(), self.nullable)
+        let dtype = self.data_type.to_arrow().clone();
+        Field::new(self.name.as_str(), dtype, self.nullable)
     }
 }
