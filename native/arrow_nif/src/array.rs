@@ -1,27 +1,10 @@
 use arrow::array::{Float32Array, Float64Array, Int32Array, Int64Array, UInt32Array};
 use arrow::datatypes::DataType;
-use rustler::Atom;
-use rustler::Decoder;
 use rustler::Env;
-use rustler::NifResult;
 use rustler::Term;
 use rustler::{Encoder, ResourceArc};
 
-mod atoms {
-    rustler::atoms! {
-        // standard atoms
-        ok,
-        error,
-
-        // error atoms
-        unsupported_type,
-
-        // type atoms
-        s,
-        f,
-        u,
-    }
-}
+use crate::datatype::convert_to_datatype;
 
 pub struct Int32ArrayResource(Int32Array);
 pub struct Int64ArrayResource(Int64Array);
@@ -49,18 +32,6 @@ impl Encoder for ArrayResource {
     }
 }
 
-pub struct XDataType(pub DataType);
-
-impl XDataType {
-    pub fn from_arrow(data_type: &DataType) -> Self {
-        let dtype = data_type.clone();
-        XDataType(dtype)
-    }
-    pub fn to_arrow(&self) -> &DataType {
-        &self.0
-    }
-}
-
 pub enum PrimitiveValue {
     Int32(i32),
     Int64(i64),
@@ -75,19 +46,6 @@ pub enum ArrayValues {
     UInt32(Vec<u32>),
     Float32(Vec<f32>),
     Float64(Vec<f64>),
-}
-
-impl Encoder for XDataType {
-    fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
-        match &self.0 {
-            DataType::Int32 => (atoms::s(), 32).encode(env),
-            DataType::Int64 => (atoms::s(), 64).encode(env),
-            DataType::UInt32 => (atoms::u(), 32).encode(env),
-            DataType::Float32 => (atoms::f(), 32).encode(env),
-            DataType::Float64 => (atoms::f(), 64).encode(env),
-            _ => (atoms::error(), 0).encode(env),
-        }
-    }
 }
 
 impl Encoder for PrimitiveValue {
@@ -253,35 +211,5 @@ fn len(arr: Term, data_type: Term) -> usize {
             array.0.len()
         }
         _ => 0,
-    }
-}
-
-fn convert_to_datatype(term: Term) -> Option<XDataType> {
-    let (t, s): (Atom, usize) = term.decode().unwrap();
-    if t == atoms::s() {
-        match s {
-            32 => Some(XDataType(DataType::Int32)),
-            64 => Some(XDataType(DataType::Int64)),
-            _ => None,
-        }
-    } else if t == atoms::f() {
-        match s {
-            32 => Some(XDataType(DataType::Float32)),
-            64 => Some(XDataType(DataType::Float64)),
-            _ => None,
-        }
-    } else if t == atoms::u() {
-        match s {
-            32 => Some(XDataType(DataType::UInt32)),
-            _ => None,
-        }
-    } else {
-        None
-    }
-}
-
-impl<'a> Decoder<'a> for XDataType {
-    fn decode(t: Term<'a>) -> NifResult<Self> {
-        Ok(convert_to_datatype(t).unwrap())
     }
 }

@@ -1,4 +1,4 @@
-use crate::array::XDataType;
+use crate::datatype::XDataType;
 use arrow::datatypes::Field;
 use rustler::NifStruct;
 
