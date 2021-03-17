@@ -42,6 +42,13 @@ defmodule Arrow do
 
   def get_table(_schema), do: error()
 
+  def read_table(path) do
+    table = read_table_parquet(path)
+    %Arrow.Table{reference: table}
+  end
+
+  defp read_table_parquet(_path), do: error()
+
   def print_table(_table), do: error()
 
   defp is_float_type({:f, _}), do: true

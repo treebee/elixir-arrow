@@ -37,7 +37,7 @@ defmodule Arrow.Table do
     import Inspect.Algebra
 
     def inspect(table, _opts) do
-      schema = Arrow.Table.schema(table.reference)
+      schema = Arrow.Table.schema(table)
       cols = for field <- schema.fields, do: "#{field.name}:  #{type_str(field.data_type)}"
       concat(["#Arrow.Table\n", "#{Enum.join(cols, "\n")}"])
     end

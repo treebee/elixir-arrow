@@ -7,8 +7,11 @@ edition = "2018"
 [lib]
 name = "arrow_nif"
 path = "src/lib.rs"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 rustler = "0.22.0-rc.0"
 arrow = "3.0.0"
+parquet = "3.0.0"
+lz4 = "1.23.2"
+lz4-sys = "1.9.2"

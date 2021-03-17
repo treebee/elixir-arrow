@@ -7,6 +7,7 @@ use std::sync::Arc;
 mod array;
 mod datatype;
 mod field;
+mod parquet_ex;
 mod schema;
 mod table;
 
@@ -15,6 +16,7 @@ use crate::array::{
     Int32ArrayResource, Int64ArrayResource, UInt32ArrayResource,
 };
 use crate::field::XField;
+use crate::parquet_ex::read_table_parquet;
 use crate::schema::XSchema;
 use crate::table::{get_schema, get_table, make_table, print_table, TableResource};
 
@@ -89,6 +91,7 @@ rustler::init!(
         get_table,
         print_table,
         make_table,
+        read_table_parquet,
     ],
     load = load
 );
