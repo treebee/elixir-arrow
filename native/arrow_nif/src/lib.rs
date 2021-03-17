@@ -5,12 +5,19 @@ use crate::array::{
 use crate::field::XField;
 use crate::schema::MetaData;
 use crate::schema::XSchema;
+use arrow::array::Float64Array;
+use arrow::array::{ArrayRef, Int64Array};
 use arrow::datatypes::{DataType, Field};
+use arrow::record_batch::RecordBatch;
+use rustler::ResourceArc;
 use rustler::{Env, Term};
+use std::sync::Arc;
 
 pub fn on_load(_env: Env) -> bool {
     true
 }
+
+pub struct TableResource(pub RecordBatch);
 
 #[rustler::nif]
 fn get_schema() -> XSchema {
@@ -23,9 +30,38 @@ fn get_schema() -> XSchema {
 }
 
 #[rustler::nif]
+fn get_table(schema: XSchema) -> ResourceArc<TableResource> {
+    let s = schema.to_arrow();
+    let mut columns: Vec<ArrayRef> = Vec::new();
+    for field in s.fields() {
+        match field.data_type() {
+            &DataType::Int64 => columns.push(Arc::new(Int64Array::from(vec![1, 2]))),
+            &DataType::Float64 => columns.push(Arc::new(Float64Array::from(vec![1.2, 42.0]))),
+            _ => println!("no match"),
+        }
+    }
+    ResourceArc::new(TableResource(
+        RecordBatch::try_new(Arc::new(s), columns).unwrap(),
+    ))
+}
+
+#[rustler::nif]
+fn print_table(table: ResourceArc<TableResource>) {
+    let t = &table.0;
+    let s = t.schema();
+    println!("{:?}", s);
+    println!("{:?}", t);
+}
+
+#[rustler::nif]
 fn echo_schema(schema: XSchema) -> XSchema {
     let s = schema.to_arrow();
-    println!("schema: {:?}", s);
+    let rb = RecordBatch::try_new(
+        Arc::new(s.clone()),
+        vec![Arc::new(Int64Array::from(vec![1, 2, 3, 4, 5]))],
+    );
+    println!("\nschema\n{:?}", s);
+    println!("\nbatch\n{:?}", rb);
     schema
 }
 
@@ -49,6 +85,7 @@ fn load(env: Env, _: Term) -> bool {
     rustler::resource!(Float64ArrayResource, env);
     rustler::resource!(Float32ArrayResource, env);
     rustler::resource!(ArrayResource, env);
+    rustler::resource!(TableResource, env);
     on_load(env);
     true
 }
@@ -63,7 +100,9 @@ rustler::init!(
         get_field,
         echo_field,
         get_schema,
-        echo_schema
+        echo_schema,
+        get_table,
+        print_table,
     ],
     load = load
 );

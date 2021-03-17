@@ -40,6 +40,10 @@ defmodule Arrow do
 
   def echo_schema(_schema), do: error()
 
+  def get_table(_schema), do: error()
+
+  def print_table(_table), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 
   defp to_float(x), do: x / 1
