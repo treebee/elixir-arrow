@@ -1,4 +1,4 @@
-defmodule Arrow.ArrayTest do
+defmodule Arrow.Test do
   use ExUnit.Case, async: true
 
   alias Arrow.Array

@@ -42,12 +42,12 @@ defmodule Arrow do
 
   def get_table(_schema), do: error()
 
-  def read_table(path) do
-    table = read_table_parquet(path)
+  def read_table(path, columns \\ []) do
+    table = read_table_parquet(path, columns)
     %Arrow.Table{reference: table}
   end
 
-  defp read_table_parquet(_path), do: error()
+  defp read_table_parquet(_path, _columns), do: error()
 
   def print_table(_table), do: error()
 
