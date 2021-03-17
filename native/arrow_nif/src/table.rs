@@ -18,6 +18,8 @@ fn get_table(schema: XSchema) -> ResourceArc<TableResource> {
             _ => println!("no match"),
         }
     }
+    let a = Int64Array::from(vec![Some(1), Some(2), None, Some(3)]);
+    println!("{:?}", a);
     ResourceArc::new(TableResource(
         RecordBatch::try_new(Arc::new(s), columns).unwrap(),
     ))

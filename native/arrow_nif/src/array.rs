@@ -40,11 +40,11 @@ pub enum PrimitiveValue {
 }
 
 pub enum ArrayValues {
-    Int32(Vec<i32>),
-    Int64(Vec<i64>),
-    UInt32(Vec<u32>),
-    Float32(Vec<f32>),
-    Float64(Vec<f64>),
+    Int32(Vec<Option<i32>>),
+    Int64(Vec<Option<i64>>),
+    UInt32(Vec<Option<u32>>),
+    Float32(Vec<Option<f32>>),
+    Float64(Vec<Option<f64>>),
 }
 
 impl Encoder for PrimitiveValue {
@@ -72,31 +72,31 @@ impl Encoder for ArrayValues {
 }
 
 impl Int32ArrayResource {
-    pub fn new(data: Vec<i32>) -> Int32ArrayResource {
+    pub fn new(data: Vec<Option<i32>>) -> Int32ArrayResource {
         Int32ArrayResource(Int32Array::from(data))
     }
 }
 
 impl Int64ArrayResource {
-    pub fn new(data: Vec<i64>) -> Int64ArrayResource {
+    pub fn new(data: Vec<Option<i64>>) -> Int64ArrayResource {
         Int64ArrayResource(Int64Array::from(data))
     }
 }
 
 impl UInt32ArrayResource {
-    fn new(data: Vec<u32>) -> UInt32ArrayResource {
+    fn new(data: Vec<Option<u32>>) -> UInt32ArrayResource {
         UInt32ArrayResource(UInt32Array::from(data))
     }
 }
 
 impl Float64ArrayResource {
-    fn new(data: Vec<f64>) -> Float64ArrayResource {
+    fn new(data: Vec<Option<f64>>) -> Float64ArrayResource {
         Float64ArrayResource(Float64Array::from(data))
     }
 }
 
 impl Float32ArrayResource {
-    fn new(data: Vec<f32>) -> Float32ArrayResource {
+    fn new(data: Vec<Option<f32>>) -> Float32ArrayResource {
         Float32ArrayResource(Float32Array::from(data))
     }
 }
@@ -105,23 +105,23 @@ impl Float32ArrayResource {
 fn make_array(a: Term, b: XDataType) -> ArrayResource {
     match &b.0 {
         DataType::Int32 => {
-            let values: Vec<i32> = a.decode().unwrap();
+            let values: Vec<Option<i32>> = a.decode().unwrap();
             ArrayResource::Int32(ResourceArc::new(Int32ArrayResource::new(values)))
         }
         DataType::Int64 => {
-            let values: Vec<i64> = a.decode().unwrap();
+            let values: Vec<Option<i64>> = a.decode().unwrap();
             ArrayResource::Int64(ResourceArc::new(Int64ArrayResource::new(values)))
         }
         DataType::UInt32 => {
-            let values: Vec<u32> = a.decode().unwrap();
+            let values: Vec<Option<u32>> = a.decode().unwrap();
             ArrayResource::UInt32(ResourceArc::new(UInt32ArrayResource::new(values)))
         }
         DataType::Float32 => {
-            let values: Vec<f32> = a.decode().unwrap();
+            let values: Vec<Option<f32>> = a.decode().unwrap();
             ArrayResource::Float32(ResourceArc::new(Float32ArrayResource::new(values)))
         }
         DataType::Float64 => {
-            let values: Vec<f64> = a.decode().unwrap();
+            let values: Vec<Option<f64>> = a.decode().unwrap();
             ArrayResource::Float64(ResourceArc::new(Float64ArrayResource::new(values)))
         }
         _ => ArrayResource::Int64(ResourceArc::new(Int64ArrayResource::new(vec![]))),
@@ -133,23 +133,23 @@ fn to_list(arr: Term, dtype: XDataType) -> ArrayValues {
     match &dtype.0 {
         DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
-            ArrayValues::Int32(array.0.values().to_vec())
+            ArrayValues::Int32(array.0.into_iter().collect())
         }
         DataType::Int64 => {
             let array: ResourceArc<Int64ArrayResource> = arr.decode().unwrap();
-            ArrayValues::Int64(array.0.values().to_vec())
+            ArrayValues::Int64(array.0.into_iter().collect())
         }
         DataType::UInt32 => {
             let array: ResourceArc<UInt32ArrayResource> = arr.decode().unwrap();
-            ArrayValues::UInt32(array.0.values().to_vec())
+            ArrayValues::UInt32(array.0.into_iter().collect())
         }
         DataType::Float32 => {
             let array: ResourceArc<Float32ArrayResource> = arr.decode().unwrap();
-            ArrayValues::Float32(array.0.values().to_vec())
+            ArrayValues::Float32(array.0.into_iter().collect())
         }
         DataType::Float64 => {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
-            ArrayValues::Float64(array.0.values().to_vec())
+            ArrayValues::Float64(array.0.into_iter().collect())
         }
         _ => ArrayValues::Int64(vec![]),
     }

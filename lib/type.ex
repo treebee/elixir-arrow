@@ -86,6 +86,7 @@ defmodule Arrow.Type do
   defp infer(arg, inferred) when is_list(arg), do: Enum.reduce(arg, inferred, &infer/2)
   defp infer(arg, inferred) when is_integer(arg), do: max(inferred, 0)
   defp infer(arg, inferred) when is_float(arg), do: max(inferred, 1)
+  defp infer(nil, inferred), do: max(inferred, 0)
 
   defp infer(other, _inferred),
     do: raise(ArgumentError, "cannot infer the numerical type of #{inspect(other)}")

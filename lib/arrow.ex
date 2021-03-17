@@ -46,5 +46,6 @@ defmodule Arrow do
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 
+  defp to_float(nil), do: nil
   defp to_float(x), do: x / 1
 end

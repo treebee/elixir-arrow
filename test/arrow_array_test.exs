@@ -11,7 +11,7 @@ defmodule Arrow.ArrayTest do
     {:f, 64}
   ]
   test "can create array without specifying type" do
-    arr = Arrow.array([1, 3, 4, 5])
+    arr = Arrow.array([1, 3, nil, 5])
     assert arr.type == {:s, 64}
     assert is_reference(arr.array)
   end
@@ -23,7 +23,7 @@ defmodule Arrow.ArrayTest do
   end
 
   test "create double array" do
-    arr = Arrow.array([1.4, 5, 6.4, 3], type: {:f, 64})
+    arr = Arrow.array([1.4, 5, 6.4, nil], type: {:f, 64})
     assert arr.type == {:f, 64}
     assert is_reference(arr.array)
   end
