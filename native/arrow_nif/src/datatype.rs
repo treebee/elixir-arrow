@@ -27,7 +27,7 @@ impl Encoder for XDataType {
     }
 }
 
-pub fn convert_to_datatype(term: Term) -> Option<XDataType> {
+fn convert_to_datatype(term: Term) -> Option<XDataType> {
     let (t, s): (Atom, usize) = term.decode().unwrap();
     if t == atoms::s() {
         match s {

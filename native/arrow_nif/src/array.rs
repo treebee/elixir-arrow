@@ -1,10 +1,9 @@
+use crate::datatype::XDataType;
 use arrow::array::{Float32Array, Float64Array, Int32Array, Int64Array, UInt32Array};
 use arrow::datatypes::DataType;
 use rustler::Env;
 use rustler::Term;
 use rustler::{Encoder, ResourceArc};
-
-use crate::datatype::convert_to_datatype;
 
 pub struct Int32ArrayResource(Int32Array);
 pub struct Int64ArrayResource(Int64Array);
@@ -103,9 +102,8 @@ impl Float32ArrayResource {
 }
 
 #[rustler::nif]
-fn make_array(a: Term, b: Term) -> ArrayResource {
-    let dtype = convert_to_datatype(b).unwrap();
-    match &dtype.0 {
+fn make_array(a: Term, b: XDataType) -> ArrayResource {
+    match &b.0 {
         DataType::Int32 => {
             let values: Vec<i32> = a.decode().unwrap();
             ArrayResource::Int32(ResourceArc::new(Int32ArrayResource::new(values)))
@@ -131,8 +129,7 @@ fn make_array(a: Term, b: Term) -> ArrayResource {
 }
 
 #[rustler::nif]
-fn to_list(arr: Term, data_type: Term) -> ArrayValues {
-    let dtype = convert_to_datatype(data_type).unwrap();
+fn to_list(arr: Term, dtype: XDataType) -> ArrayValues {
     match &dtype.0 {
         DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
@@ -159,9 +156,8 @@ fn to_list(arr: Term, data_type: Term) -> ArrayValues {
 }
 
 #[rustler::nif]
-fn sum(arr: Term, data_type: Term) -> PrimitiveValue {
-    let dtype = convert_to_datatype(data_type).unwrap();
-    match dtype.0 {
+fn sum(arr: Term, dtype: XDataType) -> PrimitiveValue {
+    match &dtype.0 {
         DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::Int32(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
@@ -187,8 +183,7 @@ fn sum(arr: Term, data_type: Term) -> PrimitiveValue {
 }
 
 #[rustler::nif]
-fn len(arr: Term, data_type: Term) -> usize {
-    let dtype = convert_to_datatype(data_type).unwrap();
+fn len(arr: Term, dtype: XDataType) -> usize {
     match &dtype.0 {
         DataType::Int32 => {
             let array: ResourceArc<Int32ArrayResource> = arr.decode().unwrap();
