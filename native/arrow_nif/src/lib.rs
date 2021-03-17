@@ -13,7 +13,8 @@ mod table;
 
 use crate::array::{
     len, make_array, sum, to_list, ArrayResource, Float32ArrayResource, Float64ArrayResource,
-    Int32ArrayResource, Int64ArrayResource, UInt32ArrayResource,
+    Int16ArrayResource, Int32ArrayResource, Int64ArrayResource, Int8ArrayResource,
+    UInt16ArrayResource, UInt32ArrayResource, UInt64ArrayResource, UInt8ArrayResource,
 };
 use crate::field::XField;
 use crate::parquet_ex::read_table_parquet;
@@ -66,7 +67,12 @@ pub fn on_load(_env: Env) -> bool {
 }
 
 fn load(env: Env, _: Term) -> bool {
+    rustler::resource!(UInt8ArrayResource, env);
+    rustler::resource!(UInt16ArrayResource, env);
     rustler::resource!(UInt32ArrayResource, env);
+    rustler::resource!(UInt64ArrayResource, env);
+    rustler::resource!(Int8ArrayResource, env);
+    rustler::resource!(Int16ArrayResource, env);
     rustler::resource!(Int32ArrayResource, env);
     rustler::resource!(Int64ArrayResource, env);
     rustler::resource!(Float64ArrayResource, env);
