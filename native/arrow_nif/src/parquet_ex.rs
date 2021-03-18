@@ -1,13 +1,18 @@
 use crate::table::RecordBatchResource;
 use crate::XSchema;
+use parquet::arrow::arrow_reader::ParquetRecordBatchReader;
 use parquet::arrow::{ArrowReader, ParquetFileArrowReader};
 use parquet::file::reader::{FileReader, SerializedFileReader};
 use rustler::ResourceArc;
 use std::fs::File;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 pub struct ParquetReaderResource(Arc<SerializedFileReader<File>>);
+pub struct ParquetRecordBatchReaderResource(Mutex<ParquetRecordBatchReader>);
 pub struct RecordBatchesResource(Vec<RecordBatchResource>);
+
+unsafe impl Send for ParquetRecordBatchReaderResource {}
+unsafe impl Sync for ParquetRecordBatchReaderResource {}
 
 #[rustler::nif]
 fn read_table_parquet(path: String, columns: Vec<String>) -> ResourceArc<RecordBatchResource> {
@@ -57,15 +62,12 @@ fn parquet_schema(reader: ResourceArc<ParquetReaderResource>) {
     println!("{:?}", r.metadata());
 }
 
-#[rustler::nif]
-fn iter_batches(
-    reader: ResourceArc<ParquetReaderResource>,
+fn create_record_reader(
+    mut arrow_reader: ParquetFileArrowReader,
     batch_size: usize,
     columns: Vec<String>,
-) -> Vec<ResourceArc<RecordBatchResource>> {
-    let r = reader.0.clone();
-    let mut arrow_reader = ParquetFileArrowReader::new(r);
-    let record_batch_reader = if columns.is_empty() {
+) -> ParquetRecordBatchReader {
+    if columns.is_empty() {
         arrow_reader.get_record_reader(batch_size).unwrap()
     } else {
         let schema = arrow_reader.get_schema().unwrap();
@@ -80,15 +82,31 @@ fn iter_batches(
         arrow_reader
             .get_record_reader_by_columns(column_ids, batch_size)
             .unwrap()
-    };
-    let mut batches: Vec<ResourceArc<RecordBatchResource>> = Vec::new();
-    for batch in record_batch_reader {
-        let record_batch = batch.unwrap();
-        if record_batch.num_rows() > 0 {
-            batches.push(ResourceArc::new(RecordBatchResource(record_batch)));
-        } else {
-            break;
-        }
     }
-    batches
+}
+
+#[rustler::nif]
+fn record_reader(
+    reader: ResourceArc<ParquetReaderResource>,
+    batch_size: usize,
+    columns: Vec<String>,
+) -> ResourceArc<ParquetRecordBatchReaderResource> {
+    let r = reader.0.clone();
+    let arrow_reader = ParquetFileArrowReader::new(r);
+    let record_batch_reader = create_record_reader(arrow_reader, batch_size, columns);
+    ResourceArc::new(ParquetRecordBatchReaderResource(Mutex::new(
+        record_batch_reader,
+    )))
+}
+
+#[rustler::nif]
+fn next_batch(
+    reader: ResourceArc<ParquetRecordBatchReaderResource>,
+) -> Option<ResourceArc<RecordBatchResource>> {
+    let mut r = reader.0.lock().unwrap();
+    let record_batch = r.next();
+    match record_batch {
+        Some(batch) => Some(ResourceArc::new(RecordBatchResource(batch.unwrap()))),
+        None => None,
+    }
 }

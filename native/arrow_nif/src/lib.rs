@@ -1,3 +1,4 @@
+use crate::parquet_ex::ParquetRecordBatchReaderResource;
 use arrow::array::Int64Array;
 use arrow::datatypes::{DataType, Field};
 use arrow::record_batch::RecordBatch;
@@ -18,8 +19,8 @@ use crate::array::{
 };
 use crate::field::XField;
 use crate::parquet_ex::{
-    iter_batches, parquet_reader, parquet_reader_arrow_schema, parquet_schema, read_table_parquet,
-    ParquetReaderResource, RecordBatchesResource,
+    next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, read_table_parquet,
+    record_reader, ParquetReaderResource, RecordBatchesResource,
 };
 use crate::schema::XSchema;
 use crate::table::{get_schema, get_table, make_table, print_table, RecordBatchResource};
@@ -84,6 +85,7 @@ fn load(env: Env, _: Term) -> bool {
     rustler::resource!(RecordBatchResource, env);
     rustler::resource!(ParquetReaderResource, env);
     rustler::resource!(RecordBatchesResource, env);
+    rustler::resource!(ParquetRecordBatchReaderResource, env);
     on_load(env);
     true
 }
@@ -106,7 +108,8 @@ rustler::init!(
         parquet_reader,
         parquet_reader_arrow_schema,
         parquet_schema,
-        iter_batches,
+        record_reader,
+        next_batch,
     ],
     load = load
 );

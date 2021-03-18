@@ -5,6 +5,7 @@ defmodule Arrow do
   use Rustler, otp_app: :arrow, crate: "arrow_nif"
 
   alias Arrow.Array
+  alias Arrow.RecordBatch
 
   @spec add(integer, integer) :: integer
   def add(_a, _b, _opt \\ :standard), do: error()
@@ -44,7 +45,7 @@ defmodule Arrow do
 
   def read_table(path, columns \\ []) do
     table = read_table_parquet(path, columns)
-    %Arrow.RecordBatch{reference: table}
+    %RecordBatch{reference: table}
   end
 
   defp read_table_parquet(_path, _columns), do: error()
@@ -66,7 +67,7 @@ defmodule Arrow do
       for {field, column} <- List.zip([schema.fields, columns]),
           do: prepare_column(field, column)
 
-    %Arrow.RecordBatch{reference: make_table(schema, columns)}
+    %RecordBatch{reference: make_table(schema, columns)}
   end
 
   def make_table(_schema, _columns), do: error()
@@ -75,7 +76,21 @@ defmodule Arrow do
   def parquet_reader_arrow_schema(_reader), do: error()
   def parquet_schema(_reader), do: error()
 
-  def iter_batches(_reader, _batch_size, _columns), do: error()
+  def iter_batches(reader, batch_size, columns) do
+    Stream.resource(
+      fn -> record_reader(reader, batch_size, columns) end,
+      fn reader ->
+        case next_batch(reader) do
+          nil -> {:halt, reader}
+          batch -> {[%RecordBatch{reference: batch}], reader}
+        end
+      end,
+      fn _reader -> nil end
+    )
+  end
+
+  def record_reader(_reader, _batch_size, _columns), do: error()
+  def next_batch(_reader), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 
