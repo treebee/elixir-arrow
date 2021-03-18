@@ -1,4 +1,4 @@
-defmodule Arrow.Table do
+defmodule Arrow.RecordBatch do
   alias Arrow.Field
   defstruct [:reference]
 
@@ -33,13 +33,13 @@ defmodule Arrow.Table do
   defp ensure_string_names(%Field{name: name} = field) when is_binary(name), do: field
   defp ensure_string_names(%Field{name: name} = field), do: %{field | name: Atom.to_string(name)}
 
-  defimpl Inspect, for: Arrow.Table do
+  defimpl Inspect, for: Arrow.RecordBatch do
     import Inspect.Algebra
 
     def inspect(table, _opts) do
-      schema = Arrow.Table.schema(table)
+      schema = Arrow.RecordBatch.schema(table)
       cols = for field <- schema.fields, do: "#{field.name}:  #{type_str(field.data_type)}"
-      concat(["#Arrow.Table\n", "#{Enum.join(cols, "\n")}"])
+      concat(["#Arrow.RecordBatch\n", "#{Enum.join(cols, "\n")}"])
     end
 
     defp type_str({:s, 8}), do: "Int8"

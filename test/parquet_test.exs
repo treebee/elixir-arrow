@@ -1,11 +1,11 @@
 defmodule Arrow.ParquetTest do
   use ExUnit.Case
   alias Arrow.Parquet
-  alias Arrow.Table
+  alias Arrow.RecordBatch
 
   test "read parquet file as table" do
     table = Parquet.read_table("test/data/dataframe.parquet")
-    schema = Table.schema(table)
+    schema = RecordBatch.schema(table)
     assert length(schema.fields) == 3
     [field1, field2, field3] = schema.fields
     assert field1.data_type == {:f, 64}
@@ -15,7 +15,7 @@ defmodule Arrow.ParquetTest do
 
   test "read parquet file with restricted columns" do
     table = Parquet.read_table("test/data/dataframe.parquet", ["a", "c"])
-    schema = Table.schema(table)
+    schema = RecordBatch.schema(table)
     assert length(schema.fields) == 2
   end
 end

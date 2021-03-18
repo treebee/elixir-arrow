@@ -9,10 +9,10 @@ use rustler::ResourceArc;
 use rustler::Term;
 use std::sync::Arc;
 
-pub struct TableResource(pub RecordBatch);
+pub struct RecordBatchResource(pub RecordBatch);
 
 #[rustler::nif]
-fn get_table(schema: XSchema) -> ResourceArc<TableResource> {
+fn get_table(schema: XSchema) -> ResourceArc<RecordBatchResource> {
     let s = schema.to_arrow();
     let mut columns: Vec<ArrayRef> = Vec::new();
     for field in s.fields() {
@@ -28,19 +28,19 @@ fn get_table(schema: XSchema) -> ResourceArc<TableResource> {
             _ => println!("no match"),
         }
     }
-    ResourceArc::new(TableResource(
+    ResourceArc::new(RecordBatchResource(
         RecordBatch::try_new(Arc::new(s), columns).unwrap(),
     ))
 }
 
 #[rustler::nif]
-fn print_table(table: ResourceArc<TableResource>) {
+fn print_table(table: ResourceArc<RecordBatchResource>) {
     let t = &table.0;
     println!("{:?}", t);
 }
 
 #[rustler::nif]
-fn make_table<'a>(schema: XSchema, columns: Vec<Term<'a>>) -> ResourceArc<TableResource> {
+fn make_table<'a>(schema: XSchema, columns: Vec<Term<'a>>) -> ResourceArc<RecordBatchResource> {
     let arrow_schema = schema.to_arrow();
     let mut cols: Vec<ArrayRef> = Vec::new();
     for (idx, field) in arrow_schema.fields().iter().enumerate() {
@@ -73,12 +73,12 @@ fn make_table<'a>(schema: XSchema, columns: Vec<Term<'a>>) -> ResourceArc<TableR
             _ => println!("no match"),
         }
     }
-    ResourceArc::new(TableResource(
+    ResourceArc::new(RecordBatchResource(
         RecordBatch::try_new(Arc::new(arrow_schema), cols).unwrap(),
     ))
 }
 
 #[rustler::nif]
-fn get_schema(table: ResourceArc<TableResource>) -> XSchema {
+fn get_schema(table: ResourceArc<RecordBatchResource>) -> XSchema {
     XSchema::from_arrow(&table.0.schema())
 }

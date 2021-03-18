@@ -2,7 +2,7 @@ defmodule Arrow.Test do
   use ExUnit.Case, async: true
 
   alias Arrow.Array
-  alias Arrow.Table
+  alias Arrow.RecordBatch
   alias Arrow.Schema
   alias Arrow.Field
 
@@ -60,17 +60,17 @@ defmodule Arrow.Test do
       ]
     }
 
-    table = Table.new([[1, nil, 4], [3, 5, 3]], schema)
+    table = RecordBatch.new([[1, nil, 4], [3, 5, 3]], schema)
     assert is_reference(table.reference)
-    schema = Table.schema(table)
+    schema = RecordBatch.schema(table)
     [field, _] = schema.fields
     assert field.name == "col1"
   end
 
   test "infer schema for new table" do
-    table = Table.new(%{col1: [1, 3, nil, 4], col2: [5.43, 4.5, nil, nil]})
+    table = RecordBatch.new(%{col1: [1, 3, nil, 4], col2: [5.43, 4.5, nil, nil]})
     assert is_reference(table.reference)
-    schema = Table.schema(table)
+    schema = RecordBatch.schema(table)
     [field1, field2] = schema.fields
     assert field1.name == "col1"
     assert field2.name == "col2"

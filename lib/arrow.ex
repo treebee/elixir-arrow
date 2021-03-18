@@ -44,7 +44,7 @@ defmodule Arrow do
 
   def read_table(path, columns \\ []) do
     table = read_table_parquet(path, columns)
-    %Arrow.Table{reference: table}
+    %Arrow.RecordBatch{reference: table}
   end
 
   defp read_table_parquet(_path, _columns), do: error()
@@ -66,10 +66,16 @@ defmodule Arrow do
       for {field, column} <- List.zip([schema.fields, columns]),
           do: prepare_column(field, column)
 
-    %Arrow.Table{reference: make_table(schema, columns)}
+    %Arrow.RecordBatch{reference: make_table(schema, columns)}
   end
 
   def make_table(_schema, _columns), do: error()
+
+  def parquet_reader(_path), do: error()
+  def parquet_reader_arrow_schema(_reader), do: error()
+  def parquet_schema(_reader), do: error()
+
+  def iter_batches(_reader, _batch_size, _columns), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 

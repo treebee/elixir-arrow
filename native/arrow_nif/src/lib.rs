@@ -17,9 +17,12 @@ use crate::array::{
     UInt16ArrayResource, UInt32ArrayResource, UInt64ArrayResource, UInt8ArrayResource,
 };
 use crate::field::XField;
-use crate::parquet_ex::read_table_parquet;
+use crate::parquet_ex::{
+    iter_batches, parquet_reader, parquet_reader_arrow_schema, parquet_schema, read_table_parquet,
+    ParquetReaderResource, RecordBatchesResource,
+};
 use crate::schema::XSchema;
-use crate::table::{get_schema, get_table, make_table, print_table, TableResource};
+use crate::table::{get_schema, get_table, make_table, print_table, RecordBatchResource};
 
 mod atoms {
     rustler::atoms! {
@@ -78,7 +81,9 @@ fn load(env: Env, _: Term) -> bool {
     rustler::resource!(Float64ArrayResource, env);
     rustler::resource!(Float32ArrayResource, env);
     rustler::resource!(ArrayResource, env);
-    rustler::resource!(TableResource, env);
+    rustler::resource!(RecordBatchResource, env);
+    rustler::resource!(ParquetReaderResource, env);
+    rustler::resource!(RecordBatchesResource, env);
     on_load(env);
     true
 }
@@ -98,6 +103,10 @@ rustler::init!(
         print_table,
         make_table,
         read_table_parquet,
+        parquet_reader,
+        parquet_reader_arrow_schema,
+        parquet_schema,
+        iter_batches,
     ],
     load = load
 );
