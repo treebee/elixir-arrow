@@ -1,5 +1,5 @@
+use crate::schema::XSchema;
 use crate::table::RecordBatchResource;
-use crate::XSchema;
 use parquet::arrow::arrow_reader::ParquetRecordBatchReader;
 use parquet::arrow::arrow_writer::ArrowWriter;
 use parquet::arrow::{ArrowReader, ParquetFileArrowReader};
@@ -59,6 +59,7 @@ fn parquet_reader_arrow_schema<'a>(reader: ResourceArc<ParquetReaderResource>) -
     XSchema::from_arrow(&schema)
 }
 
+// TODO: encoder for ParquetSchema
 #[rustler::nif]
 fn parquet_schema(reader: ResourceArc<ParquetReaderResource>) {
     let r = reader.0.clone();
