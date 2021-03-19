@@ -5,7 +5,7 @@ defmodule Arrow.RecordBatch do
   def new(columns) do
     schema = create_schema(columns)
 
-    Arrow.table(
+    Arrow.record_batch(
       schema,
       schema.fields |> Enum.map(fn field -> Map.get(columns, String.to_atom(field.name)) end)
     )
@@ -17,10 +17,10 @@ defmodule Arrow.RecordBatch do
       | fields: Enum.map(schema.fields, &ensure_string_names/1)
     }
 
-    Arrow.table(schema, columns)
+    Arrow.record_batch(schema, columns)
   end
 
-  def schema(table), do: Arrow.get_schema(table.reference)
+  def schema(record_batch), do: Arrow.get_schema(record_batch.reference)
 
   def create_schema(columns) do
     fields =
@@ -36,8 +36,8 @@ defmodule Arrow.RecordBatch do
   defimpl Inspect, for: Arrow.RecordBatch do
     import Inspect.Algebra
 
-    def inspect(table, _opts) do
-      schema = Arrow.RecordBatch.schema(table)
+    def inspect(record_batch, _opts) do
+      schema = Arrow.RecordBatch.schema(record_batch)
       cols = for field <- schema.fields, do: "#{field.name}:  #{type_str(field.data_type)}"
       concat(["#Arrow.RecordBatch\n", "#{Enum.join(cols, "\n")}"])
     end

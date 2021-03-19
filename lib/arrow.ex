@@ -37,20 +37,13 @@ defmodule Arrow do
 
   def echo_field(_field), do: error()
 
-  def get_schema(_table), do: error()
+  def get_schema(_record_batch), do: error()
 
   def echo_schema(_schema), do: error()
 
-  def get_table(_schema), do: error()
+  def get_record_batch(_schema), do: error()
 
-  def read_table(path, columns \\ []) do
-    table = read_table_parquet(path, columns)
-    %RecordBatch{reference: table}
-  end
-
-  defp read_table_parquet(_path, _columns), do: error()
-
-  def print_table(_table), do: error()
+  def print_record_batch(_record_batch), do: error()
 
   defp is_float_type({:f, _}), do: true
   defp is_float_type(_), do: false
@@ -62,15 +55,15 @@ defmodule Arrow do
     end
   end
 
-  def table(schema, columns) do
+  def record_batch(schema, columns) do
     columns =
       for {field, column} <- List.zip([schema.fields, columns]),
           do: prepare_column(field, column)
 
-    %RecordBatch{reference: make_table(schema, columns)}
+    %RecordBatch{reference: make_record_batch(schema, columns)}
   end
 
-  def make_table(_schema, _columns), do: error()
+  def make_record_batch(_schema, _columns), do: error()
 
   def parquet_reader(_path), do: error()
   def parquet_reader_arrow_schema(_reader), do: error()

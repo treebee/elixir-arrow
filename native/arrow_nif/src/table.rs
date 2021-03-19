@@ -12,35 +12,16 @@ use std::sync::Arc;
 pub struct RecordBatchResource(pub RecordBatch);
 
 #[rustler::nif]
-fn get_table(schema: XSchema) -> ResourceArc<RecordBatchResource> {
-    let s = schema.to_arrow();
-    let mut columns: Vec<ArrayRef> = Vec::new();
-    for field in s.fields() {
-        match field.data_type() {
-            &DataType::Int64 => {
-                columns.push(Arc::new(Int64Array::from(vec![Some(1), Some(2), None])))
-            }
-            &DataType::Float64 => columns.push(Arc::new(Float64Array::from(vec![
-                Some(1.2),
-                None,
-                Some(42.0),
-            ]))),
-            _ => println!("no match"),
-        }
-    }
-    ResourceArc::new(RecordBatchResource(
-        RecordBatch::try_new(Arc::new(s), columns).unwrap(),
-    ))
-}
-
-#[rustler::nif]
-fn print_table(table: ResourceArc<RecordBatchResource>) {
+fn print_record_batch(table: ResourceArc<RecordBatchResource>) {
     let t = &table.0;
     println!("{:?}", t);
 }
 
 #[rustler::nif]
-fn make_table<'a>(schema: XSchema, columns: Vec<Term<'a>>) -> ResourceArc<RecordBatchResource> {
+fn make_record_batch<'a>(
+    schema: XSchema,
+    columns: Vec<Term<'a>>,
+) -> ResourceArc<RecordBatchResource> {
     let arrow_schema = schema.to_arrow();
     let mut cols: Vec<ArrayRef> = Vec::new();
     for (idx, field) in arrow_schema.fields().iter().enumerate() {

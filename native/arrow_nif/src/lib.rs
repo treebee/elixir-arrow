@@ -14,11 +14,11 @@ use crate::array::{
     UInt16ArrayResource, UInt32ArrayResource, UInt64ArrayResource, UInt8ArrayResource,
 };
 use crate::parquet_ex::{
-    next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, read_table_parquet,
-    record_reader, write_record_batches, ParquetReaderResource, ParquetRecordBatchReaderResource,
+    next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, record_reader,
+    write_record_batches, ParquetReaderResource, ParquetRecordBatchReaderResource,
     RecordBatchesResource,
 };
-use crate::table::{get_schema, get_table, make_table, print_table, RecordBatchResource};
+use crate::table::{get_schema, make_record_batch, print_record_batch, RecordBatchResource};
 
 mod atoms {
     rustler::atoms! {
@@ -70,10 +70,8 @@ rustler::init!(
         len,
         to_list,
         get_schema,
-        get_table,
-        print_table,
-        make_table,
-        read_table_parquet,
+        print_record_batch,
+        make_record_batch,
         parquet_reader,
         parquet_reader_arrow_schema,
         parquet_schema,
