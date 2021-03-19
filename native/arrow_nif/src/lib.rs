@@ -20,7 +20,7 @@ use crate::array::{
 use crate::field::XField;
 use crate::parquet_ex::{
     next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, read_table_parquet,
-    record_reader, ParquetReaderResource, RecordBatchesResource,
+    record_reader, write_record_batches, ParquetReaderResource, RecordBatchesResource,
 };
 use crate::schema::XSchema;
 use crate::table::{get_schema, get_table, make_table, print_table, RecordBatchResource};
@@ -110,6 +110,7 @@ rustler::init!(
         parquet_schema,
         record_reader,
         next_batch,
+        write_record_batches,
     ],
     load = load
 );

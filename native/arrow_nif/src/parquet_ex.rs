@@ -1,7 +1,10 @@
 use crate::table::RecordBatchResource;
 use crate::XSchema;
 use parquet::arrow::arrow_reader::ParquetRecordBatchReader;
+use parquet::arrow::arrow_writer::ArrowWriter;
 use parquet::arrow::{ArrowReader, ParquetFileArrowReader};
+use parquet::basic::Compression;
+use parquet::file::properties::WriterProperties;
 use parquet::file::reader::{FileReader, SerializedFileReader};
 use rustler::ResourceArc;
 use std::fs::File;
@@ -109,4 +112,18 @@ fn next_batch(
         Some(batch) => Some(ResourceArc::new(RecordBatchResource(batch.unwrap()))),
         None => None,
     }
+}
+
+#[rustler::nif]
+fn write_record_batches(path: String, batches: Vec<ResourceArc<RecordBatchResource>>) {
+    let schema = batches[0].0.schema();
+    let file = File::create(path).unwrap();
+    let props = WriterProperties::builder()
+        .set_compression(Compression::SNAPPY)
+        .build();
+    let mut writer = ArrowWriter::try_new(file, schema, Some(props)).unwrap();
+    for batch in &batches {
+        writer.write(&batch.0).unwrap();
+    }
+    writer.close().unwrap();
 }

@@ -91,6 +91,7 @@ defmodule Arrow do
 
   def record_reader(_reader, _batch_size, _columns), do: error()
   def next_batch(_reader), do: error()
+  def write_record_batches(_path, _batches), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 
