@@ -13,5 +13,5 @@ crate-type = ["cdylib"]
 rustler = "0.22.0-rc.0"
 arrow = "3.0.0"
 parquet = "3.0.0"
-lz4 = "1.23.2"
-lz4-sys = "1.9.2"
+datafusion = "3.0.0"
+tokio = { version = "0.2.0", features = ["full"] }

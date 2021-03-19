@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 
 pub struct ParquetReaderResource(Arc<SerializedFileReader<File>>);
 pub struct ParquetRecordBatchReaderResource(Mutex<ParquetRecordBatchReader>);
-pub struct RecordBatchesResource(Vec<RecordBatchResource>);
+pub struct RecordBatchesResource(pub Vec<RecordBatchResource>);
 
 unsafe impl Send for ParquetRecordBatchReaderResource {}
 unsafe impl Sync for ParquetRecordBatchReaderResource {}

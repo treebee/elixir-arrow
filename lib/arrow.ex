@@ -39,7 +39,7 @@ defmodule Arrow do
   """
   @doc type: :creation
   def array(arg, opts \\ [])
-
+  # arrow functions
   def array(arg, opts) do
     type = Arrow.Type.normalize!(opts[:type] || Arrow.Type.infer(arg))
 
@@ -72,16 +72,6 @@ defmodule Arrow do
 
   def print_record_batch(_record_batch), do: error()
 
-  defp is_float_type({:f, _}), do: true
-  defp is_float_type(_), do: false
-
-  defp prepare_column(%{data_type: dtype}, column) do
-    cond do
-      is_float_type(dtype) -> Enum.map(column, &to_float/1)
-      true -> column
-    end
-  end
-
   def record_batch(schema, columns) do
     columns =
       for {field, column} <- List.zip([schema.fields, columns]),
@@ -93,6 +83,7 @@ defmodule Arrow do
   def make_record_batch(_schema, _columns), do: error()
   def record_batch_to_map(_record_batch), do: error()
 
+  # parquet functions
   def parquet_reader(_path), do: error()
   def parquet_reader_arrow_schema(_reader), do: error()
   def parquet_schema(_reader), do: error()
@@ -113,6 +104,23 @@ defmodule Arrow do
   def record_reader(_reader, _batch_size, _columns), do: error()
   def next_batch(_reader), do: error()
   def write_record_batches(_path, _batches), do: error()
+
+  # datafusion functions
+  def query_parquet(_path, _table_name, _query), do: error()
+  def create_datafusion_execution_context(), do: error()
+  def datafusion_execution_context_register_parquet(_ctx, _table_name, _path), do: error()
+  def datafusion_execute_sql(_ctx, _query), do: error()
+
+  #
+  defp is_float_type({:f, _}), do: true
+  defp is_float_type(_), do: false
+
+  defp prepare_column(%{data_type: dtype}, column) do
+    cond do
+      is_float_type(dtype) -> Enum.map(column, &to_float/1)
+      true -> column
+    end
+  end
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 

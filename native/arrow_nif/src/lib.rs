@@ -2,6 +2,7 @@ use crate::array::StringArrayResource;
 use rustler::{Env, Term};
 
 mod array;
+mod datafusion_nif;
 mod datatype;
 mod field;
 mod parquet_ex;
@@ -12,6 +13,10 @@ use crate::array::{
     len, make_array, sum, to_list, ArrayResource, Float32ArrayResource, Float64ArrayResource,
     Int16ArrayResource, Int32ArrayResource, Int64ArrayResource, Int8ArrayResource,
     UInt16ArrayResource, UInt32ArrayResource, UInt64ArrayResource, UInt8ArrayResource,
+};
+use crate::datafusion_nif::{
+    create_datafusion_execution_context, datafusion_execute_sql,
+    datafusion_execution_context_register_parquet, query_parquet, ExecutionContextResource,
 };
 use crate::parquet_ex::{
     next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, record_reader,
@@ -60,6 +65,7 @@ fn load(env: Env, _: Term) -> bool {
     rustler::resource!(ParquetReaderResource, env);
     rustler::resource!(RecordBatchesResource, env);
     rustler::resource!(ParquetRecordBatchReaderResource, env);
+    rustler::resource!(ExecutionContextResource, env);
     on_load(env);
     true
 }
@@ -80,7 +86,11 @@ rustler::init!(
         record_reader,
         next_batch,
         write_record_batches,
-        record_batch_to_map
+        record_batch_to_map,
+        query_parquet,
+        create_datafusion_execution_context,
+        datafusion_execute_sql,
+        datafusion_execution_context_register_parquet,
     ],
     load = load
 );
