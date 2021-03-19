@@ -4,7 +4,7 @@ use arrow::array::Int8Array;
 use arrow::array::UInt16Array;
 use arrow::array::UInt64Array;
 use arrow::array::UInt8Array;
-use arrow::array::{Float32Array, Float64Array, Int32Array, Int64Array, UInt32Array};
+use arrow::array::{Float32Array, Float64Array, Int32Array, Int64Array, StringArray, UInt32Array};
 use arrow::datatypes::DataType;
 use rustler::Env;
 use rustler::Term;
@@ -20,6 +20,7 @@ pub struct UInt32ArrayResource(UInt32Array);
 pub struct UInt64ArrayResource(UInt64Array);
 pub struct Float32ArrayResource(Float32Array);
 pub struct Float64ArrayResource(Float64Array);
+pub struct StringArrayResource(StringArray);
 
 // TODO this + the necessary constructs in the functions below look a bit strange
 // the enum is used to support all necessary Array return types, but maybe that can be
@@ -35,6 +36,7 @@ pub enum ArrayResource {
     UInt64(ResourceArc<UInt64ArrayResource>),
     Float32(ResourceArc<Float32ArrayResource>),
     Float64(ResourceArc<Float64ArrayResource>),
+    Utf8(ResourceArc<StringArrayResource>),
 }
 
 impl Encoder for ArrayResource {
@@ -50,6 +52,7 @@ impl Encoder for ArrayResource {
             ArrayResource::UInt64(inner) => inner.encode(env),
             ArrayResource::Float32(inner) => inner.encode(env),
             ArrayResource::Float64(inner) => inner.encode(env),
+            ArrayResource::Utf8(inner) => inner.encode(env),
         }
     }
 }
@@ -78,6 +81,7 @@ pub enum ArrayValues {
     UInt64(Vec<Option<u64>>),
     Float32(Vec<Option<f32>>),
     Float64(Vec<Option<f64>>),
+    Utf8(Vec<Option<String>>),
 }
 
 impl Encoder for PrimitiveValue {
@@ -110,6 +114,7 @@ impl Encoder for ArrayValues {
             ArrayValues::UInt64(v) => v.encode(env),
             ArrayValues::Float32(v) => v.encode(env),
             ArrayValues::Float64(v) => v.encode(env),
+            ArrayValues::Utf8(v) => v.encode(env),
         }
     }
 }
@@ -174,6 +179,18 @@ impl Float32ArrayResource {
     }
 }
 
+impl StringArrayResource {
+    fn new(data: Vec<Option<String>>) -> StringArrayResource {
+        let values: Vec<&str> = data
+            .iter()
+            .map(|s| match s {
+                Some(t) => t.as_str(),
+                None => "",
+            })
+            .collect();
+        StringArrayResource(StringArray::from(values))
+    }
+}
 #[rustler::nif]
 fn make_array(a: Term, b: XDataType) -> ArrayResource {
     match &b.0 {
@@ -217,6 +234,11 @@ fn make_array(a: Term, b: XDataType) -> ArrayResource {
             let values: Vec<Option<f64>> = a.decode().unwrap();
             ArrayResource::Float64(ResourceArc::new(Float64ArrayResource::new(values)))
         }
+        DataType::Utf8 => {
+            let values: Vec<Option<String>> = a.decode().unwrap();
+            ArrayResource::Utf8(ResourceArc::new(StringArrayResource::new(values)))
+        }
+        // TODO error handling
         _ => ArrayResource::Int64(ResourceArc::new(Int64ArrayResource::new(vec![]))),
     }
 }
@@ -264,6 +286,18 @@ fn to_list(arr: Term, dtype: XDataType) -> ArrayValues {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
             ArrayValues::Float64(array.0.into_iter().collect())
         }
+        DataType::Utf8 => {
+            let array: ResourceArc<StringArrayResource> = arr.decode().unwrap();
+            let mut values: Vec<Option<String>> = Vec::new();
+            for value in array.0.into_iter() {
+                match value {
+                    Some(t) => values.push(Some(String::from(t))),
+                    None => values.push(Some(String::from(""))),
+                }
+            }
+            ArrayValues::Utf8(values)
+        }
+        // TODO error handling
         _ => ArrayValues::Int64(vec![]),
     }
 }
@@ -311,6 +345,9 @@ fn sum(arr: Term, dtype: XDataType) -> PrimitiveValue {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
             PrimitiveValue::Float64(arrow::compute::kernels::aggregate::sum(&array.0).unwrap())
         }
+        DataType::Utf8 => {
+            panic!("String not supported")
+        }
         _ => PrimitiveValue::Int32(0),
     }
 }
@@ -357,6 +394,12 @@ fn len(arr: Term, dtype: XDataType) -> usize {
         DataType::Float64 => {
             let array: ResourceArc<Float64ArrayResource> = arr.decode().unwrap();
             array.0.len()
+        }
+        DataType::Utf8 => {
+            let array: ResourceArc<StringArrayResource> = arr.decode().unwrap();
+            // array.0.len()
+            // TODO ???
+            0
         }
         _ => 0,
     }

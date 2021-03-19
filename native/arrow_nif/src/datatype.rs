@@ -27,6 +27,7 @@ impl Encoder for XDataType {
             DataType::UInt64 => (atoms::u(), 64).encode(env),
             DataType::Float32 => (atoms::f(), 32).encode(env),
             DataType::Float64 => (atoms::f(), 64).encode(env),
+            DataType::Utf8 => (atoms::utf8(), 32).encode(env),
             _ => (atoms::error(), 0).encode(env),
         }
     }
@@ -54,6 +55,11 @@ fn convert_to_datatype(term: Term) -> Option<XDataType> {
             16 => Some(XDataType(DataType::UInt16)),
             32 => Some(XDataType(DataType::UInt32)),
             64 => Some(XDataType(DataType::UInt64)),
+            _ => None,
+        }
+    } else if t == atoms::utf8() {
+        match s {
+            32 => Some(XDataType(DataType::Utf8)),
             _ => None,
         }
     } else {

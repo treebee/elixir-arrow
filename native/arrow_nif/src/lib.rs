@@ -1,3 +1,4 @@
+use crate::array::StringArrayResource;
 use rustler::{Env, Term};
 
 mod array;
@@ -32,6 +33,7 @@ mod atoms {
         s,
         f,
         u,
+        utf8,
     }
 }
 
@@ -50,6 +52,7 @@ fn load(env: Env, _: Term) -> bool {
     rustler::resource!(Int64ArrayResource, env);
     rustler::resource!(Float64ArrayResource, env);
     rustler::resource!(Float32ArrayResource, env);
+    rustler::resource!(StringArrayResource, env);
     rustler::resource!(ArrayResource, env);
     rustler::resource!(RecordBatchResource, env);
     rustler::resource!(ParquetReaderResource, env);
