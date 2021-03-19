@@ -91,6 +91,7 @@ defmodule Arrow do
   end
 
   def make_record_batch(_schema, _columns), do: error()
+  def record_batch_to_map(_record_batch), do: error()
 
   def parquet_reader(_path), do: error()
   def parquet_reader_arrow_schema(_reader), do: error()

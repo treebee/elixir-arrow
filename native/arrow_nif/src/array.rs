@@ -396,7 +396,7 @@ fn len(arr: Term, dtype: XDataType) -> usize {
             array.0.len()
         }
         DataType::Utf8 => {
-            let array: ResourceArc<StringArrayResource> = arr.decode().unwrap();
+            let _array: ResourceArc<StringArrayResource> = arr.decode().unwrap();
             // array.0.len()
             // TODO ???
             0

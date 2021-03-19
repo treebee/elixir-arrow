@@ -30,6 +30,8 @@ defmodule Arrow.RecordBatch do
     Arrow.Schema.new(fields)
   end
 
+  def to_map(record_batch), do: Arrow.record_batch_to_map(record_batch.reference)
+
   defp ensure_string_names(%Field{name: name} = field) when is_binary(name), do: field
   defp ensure_string_names(%Field{name: name} = field), do: %{field | name: Atom.to_string(name)}
 

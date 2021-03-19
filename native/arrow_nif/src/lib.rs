@@ -5,8 +5,8 @@ mod array;
 mod datatype;
 mod field;
 mod parquet_ex;
+mod record_batch;
 mod schema;
-mod table;
 
 use crate::array::{
     len, make_array, sum, to_list, ArrayResource, Float32ArrayResource, Float64ArrayResource,
@@ -18,7 +18,9 @@ use crate::parquet_ex::{
     write_record_batches, ParquetReaderResource, ParquetRecordBatchReaderResource,
     RecordBatchesResource,
 };
-use crate::table::{get_schema, make_record_batch, print_record_batch, RecordBatchResource};
+use crate::record_batch::{
+    get_schema, make_record_batch, print_record_batch, record_batch_to_map, RecordBatchResource,
+};
 
 mod atoms {
     rustler::atoms! {
@@ -78,6 +80,7 @@ rustler::init!(
         record_reader,
         next_batch,
         write_record_batches,
+        record_batch_to_map
     ],
     load = load
 );

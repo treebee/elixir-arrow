@@ -1,5 +1,5 @@
+use crate::record_batch::RecordBatchResource;
 use crate::schema::XSchema;
-use crate::table::RecordBatchResource;
 use parquet::arrow::arrow_reader::ParquetRecordBatchReader;
 use parquet::arrow::arrow_writer::ArrowWriter;
 use parquet::arrow::{ArrowReader, ParquetFileArrowReader};
