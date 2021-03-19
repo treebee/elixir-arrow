@@ -1,21 +1,16 @@
 # ArrowElixir
 
-**TODO: Add description**
+Elixir bindings for [Apache Arrow](https://arrow.apache.org/).
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `arrow_elixir` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:arrow_elixir, "~> 0.1.0"}
-  ]
-end
+```
+NOTE:
+At the moment, this is not more than a bunch of experiments,
+NOT an official library of the Apache Arrow project!
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/arrow_elixir](https://hexdocs.pm/arrow_elixir).
+The bindings use the [Rust implementation](https://github.com/apache/arrow/tree/master/rust) via [rustler](https://github.com/rusterlium/rustler/).
+(I'm still quite new to Elixir and even less experienced with Rust, so
+don't expect too much :D)
 
+In addition to Arrow, the library comes with support for
+reading and writing [Parquet](https://parquet.apache.org/) files.

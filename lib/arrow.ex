@@ -1,15 +1,42 @@
 defmodule Arrow do
   @moduledoc """
-  `Apache Arrow` for Elixir.
+  Elixir bindings for [Apache Arrow](https://arrow.apache.org/).
+
+  This is currently an experimental library to bring Arrow and its ecosystem
+  to Elixir. It's very early work in progress.
+
+  It uses the Rust implementation via [rustler](https://github.com/rusterlium/rustler/).
+
+  NOTE:
+  It is not an offical library of the Apache Arrow project!
+
+  In addition to Arrow, the library comes with support for
+  reading and writing [Parquet](https://parquet.apache.org/) files.
+
   """
   use Rustler, otp_app: :arrow, crate: "arrow_nif"
 
   alias Arrow.Array
   alias Arrow.RecordBatch
 
-  @spec add(integer, integer) :: integer
-  def add(_a, _b, _opt \\ :standard), do: error()
+  @doc """
+  Creates an Arrow array.
 
+  For example to create an integer array:
+
+      iex> arr = Arrow.array([1, 5, 3, nil, 6])
+      #Arrow.Int64Array
+      [1, 5, 3, nil, 6]
+
+  Here, the type was inferred for us, but it is also possible to
+  provide one explicitly:
+
+      iex> arr = Arrow.array([1, 5, 3, nil, 6], type: {:f, 32})
+      #Arrow.Float32Array
+      [1.0, 5.0, 3.0, nil, 6.0]
+
+
+  """
   @doc type: :creation
   def array(arg, opts \\ [])
 

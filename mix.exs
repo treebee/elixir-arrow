@@ -9,7 +9,14 @@ defmodule ArrowElixir.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       rustler_crates: rustler_crates(),
-      compilers: [:rustler] ++ Mix.compilers()
+      compilers: [:rustler] ++ Mix.compilers(),
+      # Docs
+      name: "Arrow",
+      source_url: "https://github.com/treebee/elixir-arrow",
+      docs: [
+        main: "Arrow",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -24,7 +31,8 @@ defmodule ArrowElixir.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.22-rc"},
-      {:toml, "~> 0.5"}
+      {:toml, "~> 0.5"},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
