@@ -11,6 +11,18 @@ Elixir bindings for [Apache Arrow](https://arrow.apache.org/). Uses the
 - It's currently a 3-in-1 library, Arrow, Parquet and DataFusion, but in
   the future it would be nice to have those as separated libs
 
+## Installation
+
+Make sure to have [Rust](https://rustup.rs/) installed.
+
+```elixir
+defp deps do
+  [
+    {:arrow, git: "https://github.com/treebee/elixir-arrow.git" }
+  ]
+end
+```
+
 ## Arrow
 
 For Arrow there's already some basic support to create Array's and RecordBatches:
@@ -179,4 +191,5 @@ But it will probably make sense to think more about how the lib integrates
 nicely with the Elixir ecosystem.
 
 Speaking about the Elixir ecosystem: How about a [Nx](https://github.com/elixir-nx/nx) Arrow backend :D
+
 For DataFusion maybe some kind of Ecto adapter?
