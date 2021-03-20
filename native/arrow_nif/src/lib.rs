@@ -2,10 +2,10 @@ use crate::array::StringArrayResource;
 use rustler::{Env, Term};
 
 mod array;
-mod datafusion_nif;
+mod datafusion;
 mod datatype;
 mod field;
-mod parquet_ex;
+mod parquet;
 mod record_batch;
 mod schema;
 
@@ -14,12 +14,12 @@ use crate::array::{
     Int16ArrayResource, Int32ArrayResource, Int64ArrayResource, Int8ArrayResource,
     UInt16ArrayResource, UInt32ArrayResource, UInt64ArrayResource, UInt8ArrayResource,
 };
-use crate::datafusion_nif::{
+use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
     datafusion_execution_context_register_csv, datafusion_execution_context_register_parquet,
     query_parquet, ExecutionContextResource,
 };
-use crate::parquet_ex::{
+use crate::parquet::{
     next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, record_reader,
     write_record_batches, ParquetReaderResource, ParquetRecordBatchReaderResource,
     RecordBatchesResource,
