@@ -6,7 +6,7 @@ Elixir bindings for [Apache Arrow](https://arrow.apache.org/). Uses the
 **DISCLAIMER:**
 
 - **It's NOT an offical library of the Apache Arrow project**
-- It's an early WIP and mostly experimental, nothing but production ready.
+- It's an early WIP and mostly experimental, far from being production ready.
 - I'm quite new to Elixir and I've basically no experience with Rust, so cut me some slack, please :D.
 - It's currently a 3-in-1 library, Arrow, Parquet and DataFusion, but in
   the future it would be nice to have those as separated libs
@@ -121,7 +121,7 @@ batches =
 
 ## DataFusion
 
-Using [DataFusion](https://github.com/apache/arrow/tree/master/rust/datafusion), reading Parquet files (and also CSV) makes even more fun:
+Using [DataFusion](https://github.com/apache/arrow/tree/master/rust/datafusion) for reading Parquet files (and also CSV) makes even more fun:
 
 ### Querying Parquet Files With SQL
 
