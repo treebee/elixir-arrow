@@ -27,8 +27,8 @@ with the same length including a schema:
 ```elixir
 alias Arrow.RecordBatch
 
-record_batch = recordbatch.new(%{cola: [3, 4, nil, 5], colb: [4.5, 3.5, nil, nil], colc: ["a", "b", "c", "d"]})
-#arrow.recordbatch
+record_batch = RecordBatch.new(%{cola: [3, 4, nil, 5], colb: [4.5, 3.5, nil, nil], colc: ["a", "b", "c", "d"]})
+#Arrow.Recordbatch
 cola:  int64
 colb:  float32
 colc:  string
@@ -113,7 +113,7 @@ Using [DataFusion](https://github.com/apache/arrow/tree/master/rust/datafusion),
 
 ### Querying Parquet Files With SQL
 
-```
+```elixir
 alias Arrow.DataFusion.ExecutionContext
 batches =
   ExecutionContext.new()
