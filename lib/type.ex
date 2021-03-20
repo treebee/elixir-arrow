@@ -21,6 +21,7 @@ defmodule Arrow.Type do
           | {:u, 64}
           | {:f, 32}
           | {:f, 64}
+          # {:utf8, 32} is for a GenericStringArray<i32> on Rust side
           | {:utf8, 32}
 
   @doc """

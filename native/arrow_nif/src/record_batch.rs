@@ -62,6 +62,18 @@ fn make_record_batch<'a>(
                     columns[idx].decode::<Vec<Option<f64>>>().unwrap(),
                 )));
             }
+            DataType::Utf8 => {
+                let data = columns[idx].decode::<Vec<Option<String>>>().unwrap();
+                let values: Vec<&str> = data
+                    .iter()
+                    .map(|s| match s {
+                        Some(t) => t.as_str(),
+                        None => "",
+                    })
+                    .collect();
+                cols.push(Arc::new(StringArray::from(values)));
+            }
+
             _ => println!("no match"),
         }
     }

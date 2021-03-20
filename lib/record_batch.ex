@@ -54,5 +54,6 @@ defmodule Arrow.RecordBatch do
     defp type_str({:u, 64}), do: "UInt64"
     defp type_str({:f, 32}), do: "Float32"
     defp type_str({:f, 64}), do: "Float64"
+    defp type_str({:utf8, 32}), do: "String"
   end
 end
