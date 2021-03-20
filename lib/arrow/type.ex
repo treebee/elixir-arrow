@@ -8,6 +8,7 @@ defmodule Arrow.Type do
       * `:s` - signed integer (8, 16, 32, 64)
       * `:u` - unsigned integer (8, 16, 32, 64)
       * `:f` - float (32, 64)
+      * `:utf8` - string  # TODO
   """
 
   @type t ::
