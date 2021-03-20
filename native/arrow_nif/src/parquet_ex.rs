@@ -89,7 +89,7 @@ fn next_batch(
 }
 
 #[rustler::nif]
-fn write_record_batches(path: String, batches: Vec<ResourceArc<RecordBatchResource>>) {
+fn write_record_batches(batches: Vec<ResourceArc<RecordBatchResource>>, path: String) {
     let schema = batches[0].0.schema();
     let file = File::create(path).unwrap();
     let props = WriterProperties::builder()

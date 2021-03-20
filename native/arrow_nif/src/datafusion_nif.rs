@@ -50,6 +50,18 @@ fn datafusion_execution_context_register_parquet(
 }
 
 #[rustler::nif]
+fn datafusion_execution_context_register_csv(
+    ctx: ResourceArc<ExecutionContextResource>,
+    table: String,
+    path: String,
+) {
+    let mut context = ctx.0.lock().unwrap();
+    context
+        .register_csv(table.as_str(), path.as_str(), CsvReadOptions::new())
+        .unwrap();
+}
+
+#[rustler::nif]
 fn datafusion_execute_sql(
     ctx: ResourceArc<ExecutionContextResource>,
     query: String,

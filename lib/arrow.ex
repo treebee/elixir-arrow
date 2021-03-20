@@ -103,12 +103,13 @@ defmodule Arrow do
 
   def record_reader(_reader, _batch_size, _columns), do: error()
   def next_batch(_reader), do: error()
-  def write_record_batches(_path, _batches), do: error()
+  def write_record_batches(_batches, _path), do: error()
 
   # datafusion functions
   def query_parquet(_path, _table_name, _query), do: error()
   def create_datafusion_execution_context(), do: error()
   def datafusion_execution_context_register_parquet(_ctx, _table_name, _path), do: error()
+  def datafusion_execution_context_register_csv(_ctx, _table_name, _path), do: error()
   def datafusion_execute_sql(_ctx, _query), do: error()
 
   #

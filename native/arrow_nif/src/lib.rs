@@ -16,7 +16,8 @@ use crate::array::{
 };
 use crate::datafusion_nif::{
     create_datafusion_execution_context, datafusion_execute_sql,
-    datafusion_execution_context_register_parquet, query_parquet, ExecutionContextResource,
+    datafusion_execution_context_register_csv, datafusion_execution_context_register_parquet,
+    query_parquet, ExecutionContextResource,
 };
 use crate::parquet_ex::{
     next_batch, parquet_reader, parquet_reader_arrow_schema, parquet_schema, record_reader,
@@ -91,6 +92,7 @@ rustler::init!(
         create_datafusion_execution_context,
         datafusion_execute_sql,
         datafusion_execution_context_register_parquet,
+        datafusion_execution_context_register_csv
     ],
     load = load
 );

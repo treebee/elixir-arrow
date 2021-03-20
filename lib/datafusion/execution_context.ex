@@ -2,10 +2,8 @@ defmodule Arrow.DataFusion.ExecutionContext do
   @moduledoc """
   The ExecutionContext is the main interface for executing queries with
   DataFusion. It provides functionality to
-  * register a Parquet file that can be referenced from a SQL query
+  * register a Parquet or CSV file that can be referenced from a SQL query
   * and execution of a SQL query
-
-  Support for other data sources, including CSV files, is not yet implemented.
 
   ## Example
 
@@ -25,6 +23,11 @@ defmodule Arrow.DataFusion.ExecutionContext do
 
   def register_parquet(%{reference: ctx_ref} = ctx, table, path) do
     Arrow.datafusion_execution_context_register_parquet(ctx_ref, table, path)
+    ctx
+  end
+
+  def register_csv(%{reference: ctx_ref} = ctx, table, path) do
+    Arrow.datafusion_execution_context_register_csv(ctx_ref, table, path)
     ctx
   end
 

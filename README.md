@@ -109,7 +109,7 @@ batches =
 
 ## DataFusion
 
-Using [DataFusion](https://github.com/apache/arrow/tree/master/rust/datafusion), reading Parquet files makes even more fun:
+Using [DataFusion](https://github.com/apache/arrow/tree/master/rust/datafusion), reading Parquet files (and also CSV) makes even more fun:
 
 ### Querying Parquet Files With SQL
 
@@ -142,3 +142,41 @@ batches =
   |> Enum.map(&RecordBatch.to_map/1)
 [%{"c" => [1, 0], "sum_a" => [8.0, 3.0], "sum_b" => [4.5, 6.7]}]
 ```
+
+### Mini Data Pipeline
+
+Let's load a CSV with a GROUP BY and save back the result as Parquet:
+
+```elixir
+ExecutionContext.new()
+  |> ExecutionContext.register_csv("example", "/tmp/testdata.csv")
+  |> ExecutionContext.sql(ctx, "SELECT SUM(a) as sum_a, SUM(b) as sum_b, c FROM example GROUP BY")
+  |> Arrow.Parquet.write_record_batches("/tmp/testdata-result.parquet")
+```
+
+## Next Steps?
+
+What be nice to find some people interested in contributing. Really helpful
+would be people with Rust experience, but everyone is welcome of course :)
+
+Even given that the current Rust nif is not too bad, there are much more
+things left to do than what is already implemented.
+For example
+
+- support for more datatypes, for example dates and datetimes
+- more array operations
+- reading and writing Parquet files with different options (compression, row groups, ...)
+- reading/writing multiple files, partitioning, ...
+- a ["Table" representation](https://arrow.apache.org/docs/python/data.html#tables) ?
+- ...
+
+Another thing, as already mentioned: Splitting Arrow, Parquet and DataFusion
+into 3 different libs. (I made a short attempt to do this but ran into linker issues)
+
+I also haven't thought too much about providing a nice API, the current
+goal was rather to make some first examples work (also, no error handling yet).
+But it will probably make sense to think more about how the lib integrates
+nicely with the Elixir ecosystem.
+
+Speaking about the Elixir ecosystem: How about a [Nx](https://github.com/elixir-nx/nx) Arrow backend :D
+For DataFusion maybe some kind of Ecto adapter?
