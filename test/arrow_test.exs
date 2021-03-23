@@ -109,4 +109,9 @@ defmodule Arrow.Test do
     assert Array.is_valid(arr, 0) == true
     assert Array.is_valid(arr, 1) == false
   end
+
+  test "array null_count" do
+    arr = Arrow.array([nil, 1, nil, 4, nil])
+    assert Array.null_count(arr) == 3
+  end
 end

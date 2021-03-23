@@ -25,6 +25,8 @@ defmodule Arrow.Array do
 
   def is_valid(%Arrow.Array{} = array, idx), do: Arrow.array_is_valid(array, idx)
 
+  def null_count(%Arrow.Array{} = array), do: Arrow.array_null_count(array)
+
   def is_empty(%Arrow.Array{} = array), do: Arrow.array_is_empty(array)
   def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
 

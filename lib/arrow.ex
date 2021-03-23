@@ -71,6 +71,8 @@ defmodule Arrow do
 
   def array_is_valid(_arg, _index), do: error()
 
+  def array_null_count(_arg), do: error()
+
   def get_field(), do: error()
 
   def echo_field(_field), do: error()

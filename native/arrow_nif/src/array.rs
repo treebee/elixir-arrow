@@ -396,3 +396,8 @@ fn array_is_valid(arr: ArrayResource, index: usize) -> bool {
 fn array_is_null(arr: ArrayResource, index: usize) -> bool {
     arr.reference.0.is_null(index)
 }
+
+#[rustler::nif]
+fn array_null_count(arr: ArrayResource) -> usize {
+    arr.reference.0.null_count()
+}
