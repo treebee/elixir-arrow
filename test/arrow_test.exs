@@ -85,4 +85,10 @@ defmodule Arrow.Test do
     arr = Arrow.array([])
     assert Array.is_empty(arr) == true
   end
+
+  test "Array Access behaviour" do
+    arr = Arrow.array([4, 6, 3, 5])
+    assert Arrow.Array.to_list(arr[1..3]) == [6, 3]
+    assert Arrow.Array.to_list(arr[3]) == [5]
+  end
 end

@@ -1,6 +1,8 @@
 defmodule Arrow.Array do
   defstruct [:reference]
 
+  @behaviour Access
+
   def sum(%Arrow.Array{} = array) do
     Arrow.sum(array)
   end
@@ -19,6 +21,23 @@ defmodule Arrow.Array do
 
   def is_empty(%Arrow.Array{} = array), do: Arrow.array_is_empty(array)
   def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
+
+  @impl true
+  def fetch(%Arrow.Array{} = array, _.._ = range),
+    do: {:ok, slice(array, range.first, range.last - range.first)}
+
+  @impl true
+  def fetch(%Arrow.Array{} = array, key), do: {:ok, slice(array, key, 1)}
+
+  @impl true
+  def get_and_update(_array, _key, _function) do
+    raise "Access.get_and_update/3 not implemented for Arrow.Array"
+  end
+
+  @impl true
+  def pop(_array, _key) do
+    raise "Access.pop/2 not implemented for Arrow.Array"
+  end
 end
 
 defimpl Inspect, for: Arrow.Array do
