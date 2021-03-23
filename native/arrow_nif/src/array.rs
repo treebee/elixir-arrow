@@ -1,7 +1,7 @@
 use crate::datatype::XDataType;
 use arrow::array::{
-    ArrayRef, Float32Array, Float64Array, Int16Array, Int32Array, Int64Array, Int8Array,
-    StringArray, UInt16Array, UInt32Array, UInt64Array, UInt8Array,
+    ArrayRef, BooleanArray, Float32Array, Float64Array, Int16Array, Int32Array, Int64Array,
+    Int8Array, StringArray, UInt16Array, UInt32Array, UInt64Array, UInt8Array,
 };
 use arrow::datatypes::DataType;
 use rustler::Env;
@@ -31,6 +31,7 @@ pub enum PrimitiveValue {
 }
 
 pub enum ArrayValues {
+    Boolean(Vec<Option<bool>>),
     Int8(Vec<Option<i8>>),
     Int16(Vec<Option<i16>>),
     Int32(Vec<Option<i32>>),
@@ -64,6 +65,7 @@ impl Encoder for PrimitiveValue {
 impl Encoder for ArrayValues {
     fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
         match self {
+            ArrayValues::Boolean(v) => v.encode(env),
             ArrayValues::Int8(v) => v.encode(env),
             ArrayValues::Int16(v) => v.encode(env),
             ArrayValues::Int32(v) => v.encode(env),
@@ -82,6 +84,14 @@ impl Encoder for ArrayValues {
 #[rustler::nif]
 fn make_array(a: Term, b: XDataType) -> ArrayResource {
     match &b.0 {
+        DataType::Boolean => {
+            let values: Vec<Option<bool>> = a.decode().unwrap();
+            ArrayResource {
+                reference: ResourceArc::new(XArrayRef(
+                    Arc::new(BooleanArray::from(values)) as ArrayRef
+                )),
+            }
+        }
         DataType::Int8 => {
             let values: Vec<Option<i8>> = a.decode().unwrap();
             ArrayResource {
@@ -184,6 +194,15 @@ fn make_array(a: Term, b: XDataType) -> ArrayResource {
 #[rustler::nif]
 fn to_list(arr: ArrayResource) -> ArrayValues {
     match &arr.reference.0.data_type() {
+        DataType::Boolean => ArrayValues::Boolean(
+            arr.reference
+                .0
+                .as_any()
+                .downcast_ref::<BooleanArray>()
+                .unwrap()
+                .into_iter()
+                .collect(),
+        ),
         DataType::Int8 => ArrayValues::Int8(
             arr.reference
                 .0
@@ -355,7 +374,8 @@ fn sum(arr: ArrayResource) -> PrimitiveValue {
             )
             .unwrap(),
         ),
-        dtype => panic!("array sum not supported for {}", dtype),
+        DataType::Boolean => panic!("array sum not implemented for Boolean"),
+        dtype => panic!("array sum not implemented for {}", dtype),
     }
 }
 

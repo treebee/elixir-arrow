@@ -45,6 +45,9 @@ defmodule Arrow do
     arr =
       case type do
         {:f, _} -> Enum.map(arg, &to_float/1)
+        {:u, 1} -> Enum.map(arg, &to_bool/1)
+        {:u, _} -> Enum.map(arg, &to_int/1)
+        {:s, _} -> Enum.map(arg, &to_int/1)
         _ -> arg
       end
 
@@ -140,4 +143,22 @@ defmodule Arrow do
 
   defp to_float(nil), do: nil
   defp to_float(x), do: x / 1
+
+  defp to_bool(nil), do: nil
+  defp to_bool(0), do: false
+  defp to_bool(1), do: true
+  defp to_bool(x) when is_boolean(x), do: x
+
+  defp to_bool(x) do
+    raise "Invalid value for boolean array: #{x}"
+  end
+
+  defp to_int(nil), do: nil
+  defp to_int(true), do: 1
+  defp to_int(false), do: 0
+  defp to_int(x) when is_integer(x), do: x
+
+  defp to_int(x) do
+    raise "Invalid integer #{x}"
+  end
 end

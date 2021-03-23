@@ -2,6 +2,7 @@ use crate::atoms;
 use arrow::datatypes::DataType;
 use rustler::{Atom, Decoder, Encoder, Env, NifResult, Term};
 
+#[derive(Debug)]
 pub struct XDataType(pub DataType);
 
 impl XDataType {
@@ -17,6 +18,7 @@ impl XDataType {
 impl Encoder for XDataType {
     fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
         match &self.0 {
+            DataType::Boolean => (atoms::u(), 1).encode(env),
             DataType::Int8 => (atoms::s(), 8).encode(env),
             DataType::Int16 => (atoms::s(), 16).encode(env),
             DataType::Int32 => (atoms::s(), 32).encode(env),
@@ -51,6 +53,7 @@ fn convert_to_datatype(term: Term) -> Option<XDataType> {
         }
     } else if t == atoms::u() {
         match s {
+            1 => Some(XDataType(DataType::Boolean)),
             8 => Some(XDataType(DataType::UInt8)),
             16 => Some(XDataType(DataType::UInt16)),
             32 => Some(XDataType(DataType::UInt32)),

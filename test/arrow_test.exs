@@ -114,4 +114,11 @@ defmodule Arrow.Test do
     arr = Arrow.array([nil, 1, nil, 4, nil])
     assert Array.null_count(arr) == 3
   end
+
+  test "create boolean array" do
+    arr = Arrow.array([true, false, true])
+    assert Array.data_type(arr) == {:u, 1}
+    arr = Arrow.array([1, 0, 1, 1, nil], type: {:u, 1})
+    assert Array.to_list(arr) == [true, false, true, true, nil]
+  end
 end

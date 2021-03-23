@@ -190,6 +190,4 @@ goal was rather to make some first examples work (also, no error handling yet).
 But it will probably make sense to think more about how the lib integrates
 nicely with the Elixir ecosystem.
 
-Speaking about the Elixir ecosystem: How about a [Nx](https://github.com/elixir-nx/nx) Arrow backend :D
-
 For DataFusion maybe some kind of Ecto adapter?

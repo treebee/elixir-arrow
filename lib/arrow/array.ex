@@ -58,6 +58,7 @@ defimpl Inspect, for: Arrow.Array do
   defp type_str({:s, 16}), do: "Int16"
   defp type_str({:s, 32}), do: "Int32"
   defp type_str({:s, 64}), do: "Int64"
+  defp type_str({:u, 1}), do: "Boolean"
   defp type_str({:u, 8}), do: "UInt8"
   defp type_str({:u, 16}), do: "UInt16"
   defp type_str({:u, 32}), do: "UInt32"

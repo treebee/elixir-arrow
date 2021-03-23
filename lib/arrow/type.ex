@@ -16,6 +16,8 @@ defmodule Arrow.Type do
           | {:s, 16}
           | {:s, 32}
           | {:s, 64}
+          # {:u, 1} -> boolean
+          | {:u, 1}
           | {:u, 8}
           | {:u, 16}
           | {:u, 32}
@@ -81,16 +83,18 @@ defmodule Arrow.Type do
   def infer(value) do
     case infer(value, -1) do
       -1 -> {:f, 32}
-      0 -> {:s, 64}
-      1 -> {:f, 32}
+      0 -> {:u, 1}
+      1 -> {:s, 64}
+      2 -> {:f, 32}
       {:utf8, 32} -> {:utf8, 32}
     end
   end
 
   defp infer(arg, _inferred) when is_binary(arg), do: {:utf8, 32}
   defp infer(arg, inferred) when is_list(arg), do: Enum.reduce(arg, inferred, &infer/2)
-  defp infer(arg, inferred) when is_integer(arg), do: max(inferred, 0)
-  defp infer(arg, inferred) when is_float(arg), do: max(inferred, 1)
+  defp infer(arg, inferred) when is_boolean(arg), do: max(inferred, 0)
+  defp infer(arg, inferred) when is_integer(arg), do: max(inferred, 1)
+  defp infer(arg, inferred) when is_float(arg), do: max(inferred, 2)
   defp infer(nil, inferred), do: max(inferred, 0)
 
   defp infer(other, _inferred),
@@ -111,7 +115,7 @@ defmodule Arrow.Type do
     case validate(type) do
       :error ->
         raise ArgumentError,
-              "invalid numerical type: #{inspect(type)} (see Nx.Type docs for all supported types)"
+              "invalid numerical type: #{inspect(type)} (see Arrow.Type docs for all supported types)"
 
       type ->
         type
@@ -119,7 +123,7 @@ defmodule Arrow.Type do
   end
 
   defp validate({:s, size} = type) when size in [8, 16, 32, 64], do: type
-  defp validate({:u, size} = type) when size in [8, 16, 32, 64], do: type
+  defp validate({:u, size} = type) when size in [1, 8, 16, 32, 64], do: type
   defp validate({:f, size} = type) when size in [32, 64], do: type
   defp validate({:utf8, size} = type) when size in [32, 64], do: type
   defp validate({:bf, size} = type) when size in [16], do: type
