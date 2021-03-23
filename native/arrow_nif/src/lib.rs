@@ -1,6 +1,7 @@
 use rustler::{Env, Term};
 
 mod array;
+mod compute;
 mod datafusion;
 mod datatype;
 mod field;
@@ -11,6 +12,9 @@ mod schema;
 use crate::array::{
     array_data_type, array_is_empty, array_is_null, array_is_valid, array_null_count, array_offset,
     array_slice, len, make_array, sum, to_list, XArrayRef,
+};
+use crate::compute::{
+    array_compute_add, array_compute_divide, array_compute_multiply, array_compute_subtract,
 };
 use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
@@ -68,6 +72,10 @@ rustler::init!(
         array_null_count,
         array_offset,
         array_slice,
+        array_compute_add,
+        array_compute_divide,
+        array_compute_multiply,
+        array_compute_subtract,
         make_array,
         sum,
         len,

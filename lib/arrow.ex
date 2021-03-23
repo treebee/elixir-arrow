@@ -76,6 +76,11 @@ defmodule Arrow do
 
   def array_null_count(_arg), do: error()
 
+  def array_compute_add(_left, _right), do: error()
+  def array_compute_divide(_left, _right), do: error()
+  def array_compute_multiply(_left, _right), do: error()
+  def array_compute_subtract(_left, _right), do: error()
+
   def get_field(), do: error()
 
   def echo_field(_field), do: error()
