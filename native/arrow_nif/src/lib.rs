@@ -13,8 +13,14 @@ use crate::array::{
     array_data_type, array_is_empty, array_is_null, array_is_valid, array_null_count, array_offset,
     array_slice, len, make_array, sum, to_list, XArrayRef,
 };
-use crate::compute::{
+use crate::compute::arithmetic::{
     array_compute_add, array_compute_divide, array_compute_multiply, array_compute_subtract,
+};
+use crate::compute::comparison::{
+    array_compute_eq, array_compute_eq_scalar, array_compute_gt, array_compute_gt_eq,
+    array_compute_gt_eq_scalar, array_compute_gt_scalar, array_compute_lt, array_compute_lt_eq,
+    array_compute_lt_eq_scalar, array_compute_lt_scalar, array_compute_neq,
+    array_compute_neq_scalar,
 };
 use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
@@ -76,6 +82,18 @@ rustler::init!(
         array_compute_divide,
         array_compute_multiply,
         array_compute_subtract,
+        array_compute_eq,
+        array_compute_neq,
+        array_compute_gt,
+        array_compute_gt_eq,
+        array_compute_lt,
+        array_compute_lt_eq,
+        array_compute_eq_scalar,
+        array_compute_neq_scalar,
+        array_compute_gt_scalar,
+        array_compute_gt_eq_scalar,
+        array_compute_lt_scalar,
+        array_compute_lt_eq_scalar,
         make_array,
         sum,
         len,

@@ -81,6 +81,18 @@ defmodule Arrow do
   def array_compute_multiply(_left, _right), do: error()
   def array_compute_subtract(_left, _right), do: error()
 
+  def array_compute_eq(_left, _right), do: error()
+  def array_compute_neq(_left, _right), do: error()
+  def array_compute_gt(_left, _right), do: error()
+  def array_compute_gt_eq(_left, _right), do: error()
+  def array_compute_lt(_left, _right), do: error()
+  def array_compute_lt_eq(_left, _right), do: error()
+  def array_compute_eq_scalar(_left, _right), do: error()
+  def array_compute_neq_scalar(_left, _right), do: error()
+  def array_compute_gt_scalar(_left, _right), do: error()
+  def array_compute_gt_eq_scalar(_left, _right), do: error()
+  def array_compute_lt_scalar(_left, _right), do: error()
+  def array_compute_lt_eq_scalar(_left, _right), do: error()
   def get_field(), do: error()
 
   def echo_field(_field), do: error()
