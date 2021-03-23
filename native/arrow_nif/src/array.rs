@@ -368,3 +368,11 @@ fn len(arr: ArrayResource) -> usize {
 fn array_data_type(arr: ArrayResource) -> XDataType {
     XDataType::from_arrow(&arr.reference.0.data_type())
 }
+
+#[rustler::nif]
+fn array_slice(arr: ArrayResource, offset: usize, length: usize) -> ArrayResource {
+    let slice = arr.reference.0.slice(offset, length);
+    ArrayResource {
+        reference: ResourceArc::new(XArrayRef(slice)),
+    }
+}

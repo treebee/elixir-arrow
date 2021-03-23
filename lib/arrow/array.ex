@@ -13,6 +13,10 @@ defmodule Arrow.Array do
     Arrow.to_list(array)
   end
 
+  def slice(%Arrow.Array{} = array, offset, length) do
+    Arrow.array_slice(array, offset, length)
+  end
+
   def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
 end
 

@@ -72,4 +72,10 @@ defmodule Arrow.Test do
     assert field1.name == "col1"
     assert field2.name == "col2"
   end
+
+  test "create slice of array" do
+    arr = Arrow.array([1, 54, 3, 4])
+    slice = Array.slice(arr, 1, 2)
+    assert Array.to_list(slice) == [54, 3]
+  end
 end

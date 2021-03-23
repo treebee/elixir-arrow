@@ -61,6 +61,8 @@ defmodule Arrow do
 
   def make_array(_arg, _type), do: error()
 
+  def array_slice(_arg, _offset, _length), do: error()
+
   def get_field(), do: error()
 
   def echo_field(_field), do: error()
