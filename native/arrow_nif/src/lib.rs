@@ -8,7 +8,9 @@ mod parquet;
 mod record_batch;
 mod schema;
 
-use crate::array::{array_data_type, array_slice, len, make_array, sum, to_list, XArrayRef};
+use crate::array::{
+    array_data_type, array_is_empty, array_slice, len, make_array, sum, to_list, XArrayRef,
+};
 use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
     datafusion_execution_context_register_csv, datafusion_execution_context_register_parquet,
@@ -59,6 +61,7 @@ rustler::init!(
     "Elixir.Arrow",
     [
         array_data_type,
+        array_is_empty,
         array_slice,
         make_array,
         sum,

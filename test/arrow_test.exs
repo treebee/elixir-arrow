@@ -78,4 +78,11 @@ defmodule Arrow.Test do
     slice = Array.slice(arr, 1, 2)
     assert Array.to_list(slice) == [54, 3]
   end
+
+  test "array is_empty" do
+    arr = Arrow.array([1, 3, 4])
+    assert Array.is_empty(arr) == false
+    arr = Arrow.array([])
+    assert Array.is_empty(arr) == true
+  end
 end

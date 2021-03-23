@@ -376,3 +376,8 @@ fn array_slice(arr: ArrayResource, offset: usize, length: usize) -> ArrayResourc
         reference: ResourceArc::new(XArrayRef(slice)),
     }
 }
+
+#[rustler::nif]
+fn array_is_empty(arr: ArrayResource) -> bool {
+    arr.reference.0.is_empty()
+}
