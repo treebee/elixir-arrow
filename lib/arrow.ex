@@ -87,6 +87,13 @@ defmodule Arrow do
   def array_compute_gt_eq(_left, _right), do: error()
   def array_compute_lt(_left, _right), do: error()
   def array_compute_lt_eq(_left, _right), do: error()
+
+  def array_compute_eq_utf8(_left, _right), do: error()
+  def array_compute_neq_utf8(_left, _right), do: error()
+  def array_compute_gt_utf8(_left, _right), do: error()
+  def array_compute_gt_eq_utf8(_left, _right), do: error()
+  def array_compute_lt_utf8(_left, _right), do: error()
+  def array_compute_lt_eq_utf8(_left, _right), do: error()
   def array_compute_eq_scalar(_left, _right), do: error()
   def array_compute_neq_scalar(_left, _right), do: error()
   def array_compute_gt_scalar(_left, _right), do: error()

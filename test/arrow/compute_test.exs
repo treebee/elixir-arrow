@@ -33,7 +33,9 @@ defmodule Arrow.ComputeTest do
                    fn left, right, func, expected ->
                      left_arr = Arrow.array(left)
                      right_arr = Arrow.array(right)
-                     assert Array.to_list(func.(left_arr, right_arr)) == expected
+
+                     assert Array.to_list(func.(left_arr, right_arr)) == expected,
+                            "failed for #{inspect(func)}"
                    end do
     [
       {[1, 2, 3, nil], [2, 2, 2, 2], &Arrow.Compute.Comparison.eq/2, [false, true, false, nil]},
@@ -49,7 +51,9 @@ defmodule Arrow.ComputeTest do
   test_with_params "compare numerical array with scalar",
                    fn left, right, func, expected ->
                      left_arr = Arrow.array(left)
-                     assert Array.to_list(func.(left_arr, right)) == expected
+
+                     assert Array.to_list(func.(left_arr, right)) == expected,
+                            "failed for #{inspect(func)}"
                    end do
     [
       {[1.0, 2, 3, nil], 1.5, &Arrow.Compute.Comparison.eq_scalar/2, [false, false, false, nil]},
@@ -58,6 +62,30 @@ defmodule Arrow.ComputeTest do
       {[1, 2, 3, nil], 2, &Arrow.Compute.Comparison.gt_scalar/2, [false, false, true, nil]},
       {[1, 2, 3.0, nil], 2.3, &Arrow.Compute.Comparison.lt_eq_scalar/2, [true, true, false, nil]},
       {[1, 2.6, 3, nil], 2.8, &Arrow.Compute.Comparison.lt_scalar/2, [true, true, false, nil]}
+    ]
+  end
+
+  test_with_params "compare string arrays",
+                   fn left, right, func, expected ->
+                     left_arr = Arrow.array(left)
+                     right_arr = Arrow.array(right)
+
+                     assert Array.to_list(func.(left_arr, right_arr)) == expected,
+                            "failed for #{inspect(func)}"
+                   end do
+    [
+      {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.eq_utf8/2,
+       [true, false, false, nil]},
+      {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.neq_utf8/2,
+       [false, true, true, nil]},
+      {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.lt_utf8/2,
+       [false, false, false, nil]},
+      {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.lt_eq_utf8/2,
+       [true, false, false, nil]},
+      {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.gt_eq_utf8/2,
+       [true, true, true, nil]},
+      {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.gt_utf8/2,
+       [false, true, true, nil]}
     ]
   end
 end

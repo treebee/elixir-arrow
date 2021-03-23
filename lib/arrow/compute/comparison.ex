@@ -8,6 +8,18 @@ defmodule Arrow.Compute.Comparison do
   def lt(%Array{} = left, %Array{} = right), do: Arrow.array_compute_lt(left, right)
   def lt_eq(%Array{} = left, %Array{} = right), do: Arrow.array_compute_lt_eq(left, right)
 
+  def eq_utf8(%Array{} = left, %Array{} = right), do: Arrow.array_compute_eq_utf8(left, right)
+  def neq_utf8(%Array{} = left, %Array{} = right), do: Arrow.array_compute_neq_utf8(left, right)
+  def gt_utf8(%Array{} = left, %Array{} = right), do: Arrow.array_compute_gt_utf8(left, right)
+
+  def gt_eq_utf8(%Array{} = left, %Array{} = right),
+    do: Arrow.array_compute_gt_eq_utf8(left, right)
+
+  def lt_utf8(%Array{} = left, %Array{} = right), do: Arrow.array_compute_lt_utf8(left, right)
+
+  def lt_eq_utf8(%Array{} = left, %Array{} = right),
+    do: Arrow.array_compute_lt_eq_utf8(left, right)
+
   def eq_scalar(%Array{} = left, right), do: Arrow.array_compute_eq_scalar(left, right)
   def neq_scalar(%Array{} = left, right), do: Arrow.array_compute_neq_scalar(left, right)
   def gt_scalar(%Array{} = left, right), do: Arrow.array_compute_gt_scalar(left, right)

@@ -17,10 +17,11 @@ use crate::compute::arithmetic::{
     array_compute_add, array_compute_divide, array_compute_multiply, array_compute_subtract,
 };
 use crate::compute::comparison::{
-    array_compute_eq, array_compute_eq_scalar, array_compute_gt, array_compute_gt_eq,
-    array_compute_gt_eq_scalar, array_compute_gt_scalar, array_compute_lt, array_compute_lt_eq,
-    array_compute_lt_eq_scalar, array_compute_lt_scalar, array_compute_neq,
-    array_compute_neq_scalar,
+    array_compute_eq, array_compute_eq_scalar, array_compute_eq_utf8, array_compute_gt,
+    array_compute_gt_eq, array_compute_gt_eq_scalar, array_compute_gt_eq_utf8,
+    array_compute_gt_scalar, array_compute_gt_utf8, array_compute_lt, array_compute_lt_eq,
+    array_compute_lt_eq_scalar, array_compute_lt_eq_utf8, array_compute_lt_scalar,
+    array_compute_lt_utf8, array_compute_neq, array_compute_neq_scalar, array_compute_neq_utf8,
 };
 use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
@@ -88,6 +89,12 @@ rustler::init!(
         array_compute_gt_eq,
         array_compute_lt,
         array_compute_lt_eq,
+        array_compute_eq_utf8,
+        array_compute_neq_utf8,
+        array_compute_gt_utf8,
+        array_compute_gt_eq_utf8,
+        array_compute_lt_utf8,
+        array_compute_lt_eq_utf8,
         array_compute_eq_scalar,
         array_compute_neq_scalar,
         array_compute_gt_scalar,

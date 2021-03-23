@@ -1,8 +1,8 @@
 use crate::array::{ArrayResource, XArrayRef};
-use crate::{impl_compute_func, impl_compute_func_scalar};
+use crate::{impl_compute_func, impl_compute_func_scalar, impl_compute_func_utf8};
 use arrow::array::{
     ArrayRef, Float32Array, Float64Array, Int16Array, Int32Array, Int64Array, Int8Array,
-    UInt16Array, UInt32Array, UInt64Array, UInt8Array,
+    StringArray, UInt16Array, UInt32Array, UInt64Array, UInt8Array,
 };
 use arrow::datatypes::DataType;
 use rustler::{ResourceArc, Term};
@@ -21,3 +21,10 @@ impl_compute_func_scalar!(array_compute_gt_scalar, gt_scalar, comparison);
 impl_compute_func_scalar!(array_compute_gt_eq_scalar, gt_eq_scalar, comparison);
 impl_compute_func_scalar!(array_compute_lt_scalar, lt_scalar, comparison);
 impl_compute_func_scalar!(array_compute_lt_eq_scalar, lt_eq_scalar, comparison);
+
+impl_compute_func_utf8!(array_compute_eq_utf8, eq_utf8, comparison);
+impl_compute_func_utf8!(array_compute_neq_utf8, neq_utf8, comparison);
+impl_compute_func_utf8!(array_compute_gt_utf8, gt_utf8, comparison);
+impl_compute_func_utf8!(array_compute_gt_eq_utf8, gt_eq_utf8, comparison);
+impl_compute_func_utf8!(array_compute_lt_utf8, lt_utf8, comparison);
+impl_compute_func_utf8!(array_compute_lt_eq_utf8, lt_eq_utf8, comparison);

@@ -174,11 +174,11 @@ fn make_array(a: Term, b: XDataType) -> ArrayResource {
         }
         DataType::Utf8 => {
             let values: Vec<Option<String>> = a.decode().unwrap();
-            let values: Vec<&str> = values
+            let values: Vec<Option<&str>> = values
                 .iter()
                 .map(|s| match s {
-                    Some(v) => v.as_str(),
-                    None => "",
+                    Some(v) => Some(v.as_str()),
+                    None => None,
                 })
                 .collect();
             ArrayResource {
