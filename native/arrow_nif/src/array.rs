@@ -386,3 +386,13 @@ fn array_is_empty(arr: ArrayResource) -> bool {
 fn array_offset(arr: ArrayResource) -> usize {
     arr.reference.0.offset()
 }
+
+#[rustler::nif]
+fn array_is_valid(arr: ArrayResource, index: usize) -> bool {
+    arr.reference.0.is_valid(index)
+}
+
+#[rustler::nif]
+fn array_is_null(arr: ArrayResource, index: usize) -> bool {
+    arr.reference.0.is_null(index)
+}

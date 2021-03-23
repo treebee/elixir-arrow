@@ -97,4 +97,16 @@ defmodule Arrow.Test do
     assert Array.offset(arr) == 0
     assert Array.offset(arr[2..4]) == 2
   end
+
+  test "array element is_null" do
+    arr = Arrow.array([1, nil, 3])
+    assert Array.is_null(arr, 0) == false
+    assert Array.is_null(arr, 1) == true
+  end
+
+  test "array element is_valid" do
+    arr = Arrow.array([1, nil, 3])
+    assert Array.is_valid(arr, 0) == true
+    assert Array.is_valid(arr, 1) == false
+  end
 end

@@ -21,6 +21,10 @@ defmodule Arrow.Array do
 
   def offset(%Arrow.Array{} = array), do: Arrow.array_offset(array)
 
+  def is_null(%Arrow.Array{} = array, idx), do: Arrow.array_is_null(array, idx)
+
+  def is_valid(%Arrow.Array{} = array, idx), do: Arrow.array_is_valid(array, idx)
+
   def is_empty(%Arrow.Array{} = array), do: Arrow.array_is_empty(array)
   def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
 
