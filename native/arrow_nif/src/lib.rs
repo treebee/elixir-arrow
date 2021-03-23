@@ -1,4 +1,3 @@
-use crate::array::StringArrayResource;
 use rustler::{Env, Term};
 
 mod array;
@@ -9,11 +8,7 @@ mod parquet;
 mod record_batch;
 mod schema;
 
-use crate::array::{
-    len, make_array, sum, to_list, ArrayResource, Float32ArrayResource, Float64ArrayResource,
-    Int16ArrayResource, Int32ArrayResource, Int64ArrayResource, Int8ArrayResource,
-    UInt16ArrayResource, UInt32ArrayResource, UInt64ArrayResource, UInt8ArrayResource,
-};
+use crate::array::{array_data_type, len, make_array, sum, to_list, XArrayRef};
 use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
     datafusion_execution_context_register_csv, datafusion_execution_context_register_parquet,
@@ -50,23 +45,12 @@ pub fn on_load(_env: Env) -> bool {
 }
 
 fn load(env: Env, _: Term) -> bool {
-    rustler::resource!(UInt8ArrayResource, env);
-    rustler::resource!(UInt16ArrayResource, env);
-    rustler::resource!(UInt32ArrayResource, env);
-    rustler::resource!(UInt64ArrayResource, env);
-    rustler::resource!(Int8ArrayResource, env);
-    rustler::resource!(Int16ArrayResource, env);
-    rustler::resource!(Int32ArrayResource, env);
-    rustler::resource!(Int64ArrayResource, env);
-    rustler::resource!(Float64ArrayResource, env);
-    rustler::resource!(Float32ArrayResource, env);
-    rustler::resource!(StringArrayResource, env);
-    rustler::resource!(ArrayResource, env);
     rustler::resource!(RecordBatchResource, env);
     rustler::resource!(ParquetReaderResource, env);
     rustler::resource!(RecordBatchesResource, env);
     rustler::resource!(ParquetRecordBatchReaderResource, env);
     rustler::resource!(ExecutionContextResource, env);
+    rustler::resource!(XArrayRef, env);
     on_load(env);
     true
 }
@@ -74,6 +58,7 @@ fn load(env: Env, _: Term) -> bool {
 rustler::init!(
     "Elixir.Arrow",
     [
+        array_data_type,
         make_array,
         sum,
         len,

@@ -1,22 +1,25 @@
 defmodule Arrow.Array do
-  defstruct [:array, :type]
+  defstruct [:reference]
 
   def sum(%Arrow.Array{} = array) do
-    Arrow.sum(array.array, array.type)
+    Arrow.sum(array)
   end
 
   def len(%Arrow.Array{} = array) do
-    Arrow.len(array.array, array.type)
+    Arrow.len(array)
   end
 
   def to_list(%Arrow.Array{} = array) do
-    Arrow.to_list(array.array, array.type)
+    Arrow.to_list(array)
   end
+
+  def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
 end
 
 defimpl Inspect, for: Arrow.Array do
-  def inspect(%{type: type} = array, _opts) do
-    "#Arrow.#{type_str(type)}Array\n" <> "#{inspect(Arrow.Array.to_list(array))}"
+  def inspect(array, _opts) do
+    "#Arrow.#{type_str(Arrow.Array.data_type(array))}Array\n" <>
+      "#{inspect(Arrow.Array.to_list(array))}"
   end
 
   defp type_str({:s, 8}), do: "Int8"

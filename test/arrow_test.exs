@@ -15,20 +15,17 @@ defmodule Arrow.Test do
   ]
   test "can create array without specifying type" do
     arr = Arrow.array([1, 3, nil, 5])
-    assert arr.type == {:s, 64}
-    assert is_reference(arr.array)
+    assert is_reference(arr.reference)
   end
 
   test "create float array" do
     arr = Arrow.array([1.4, 5, 6.4, 3])
-    assert arr.type == {:f, 32}
-    assert is_reference(arr.array)
+    assert is_reference(arr.reference)
   end
 
   test "create double array" do
     arr = Arrow.array([1.4, 5, 6.4, nil], type: {:f, 64})
-    assert arr.type == {:f, 64}
-    assert is_reference(arr.array)
+    assert is_reference(arr.reference)
   end
 
   test "calculates sum of array" do

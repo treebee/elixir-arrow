@@ -16,7 +16,6 @@ defmodule Arrow do
   """
   use Rustler, otp_app: :arrow, crate: "arrow_nif"
 
-  alias Arrow.Array
   alias Arrow.RecordBatch
 
   @doc """
@@ -49,14 +48,16 @@ defmodule Arrow do
         _ -> arg
       end
 
-    %Array{array: make_array(arr, type), type: type}
+    make_array(arr, type)
   end
 
-  def sum(_arg, _type), do: error()
+  def array_data_type(_arg), do: error()
 
-  def to_list(_arg, _type), do: error()
+  def sum(_arg), do: error()
 
-  def len(_arg, _type), do: error()
+  def to_list(_arg), do: error()
+
+  def len(_arg), do: error()
 
   def make_array(_arg, _type), do: error()
 
