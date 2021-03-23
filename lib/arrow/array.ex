@@ -19,6 +19,8 @@ defmodule Arrow.Array do
     Arrow.array_slice(array, offset, length)
   end
 
+  def offset(%Arrow.Array{} = array), do: Arrow.array_offset(array)
+
   def is_empty(%Arrow.Array{} = array), do: Arrow.array_is_empty(array)
   def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
 

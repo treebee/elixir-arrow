@@ -381,3 +381,8 @@ fn array_slice(arr: ArrayResource, offset: usize, length: usize) -> ArrayResourc
 fn array_is_empty(arr: ArrayResource) -> bool {
     arr.reference.0.is_empty()
 }
+
+#[rustler::nif]
+fn array_offset(arr: ArrayResource) -> usize {
+    arr.reference.0.offset()
+}

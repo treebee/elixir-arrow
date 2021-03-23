@@ -63,6 +63,8 @@ defmodule Arrow do
 
   def array_slice(_arg, _offset, _length), do: error()
 
+  def array_offset(_arg), do: error()
+
   def array_is_empty(_arg), do: error()
   def get_field(), do: error()
 

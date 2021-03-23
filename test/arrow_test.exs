@@ -91,4 +91,10 @@ defmodule Arrow.Test do
     assert Arrow.Array.to_list(arr[1..3]) == [6, 3]
     assert Arrow.Array.to_list(arr[3]) == [5]
   end
+
+  test "get Array offset" do
+    arr = Arrow.array([4, 5, 3, 2])
+    assert Array.offset(arr) == 0
+    assert Array.offset(arr[2..4]) == 2
+  end
 end
