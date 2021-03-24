@@ -1,5 +1,8 @@
 use crate::array::{ArrayResource, XArrayRef};
-use crate::{impl_compute_func, impl_compute_func_scalar, impl_compute_func_utf8};
+use crate::{
+    impl_compute_func, impl_compute_func_scalar, impl_compute_func_utf8,
+    impl_compute_func_utf8_scalar,
+};
 use arrow::array::{
     ArrayRef, Float32Array, Float64Array, Int16Array, Int32Array, Int64Array, Int8Array,
     StringArray, UInt16Array, UInt32Array, UInt64Array, UInt8Array,
@@ -28,3 +31,18 @@ impl_compute_func_utf8!(array_compute_gt_utf8, gt_utf8, comparison);
 impl_compute_func_utf8!(array_compute_gt_eq_utf8, gt_eq_utf8, comparison);
 impl_compute_func_utf8!(array_compute_lt_utf8, lt_utf8, comparison);
 impl_compute_func_utf8!(array_compute_lt_eq_utf8, lt_eq_utf8, comparison);
+
+impl_compute_func_utf8_scalar!(array_compute_eq_utf8_scalar, eq_utf8_scalar, comparison);
+impl_compute_func_utf8_scalar!(array_compute_neq_utf8_scalar, neq_utf8_scalar, comparison);
+impl_compute_func_utf8_scalar!(array_compute_gt_utf8_scalar, gt_utf8_scalar, comparison);
+impl_compute_func_utf8_scalar!(
+    array_compute_gt_eq_utf8_scalar,
+    gt_eq_utf8_scalar,
+    comparison
+);
+impl_compute_func_utf8_scalar!(array_compute_lt_utf8_scalar, lt_utf8_scalar, comparison);
+impl_compute_func_utf8_scalar!(
+    array_compute_lt_eq_utf8_scalar,
+    lt_eq_utf8_scalar,
+    comparison
+);

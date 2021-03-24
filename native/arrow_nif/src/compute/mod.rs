@@ -391,3 +391,24 @@ macro_rules! impl_compute_func_utf8 {
         }
     };
 }
+
+#[macro_export]
+macro_rules! impl_compute_func_utf8_scalar {
+    ($nif:ident, $target:ident, $module:ident) => {
+        #[rustler::nif]
+        pub fn $nif(left: ArrayResource, right: &str) -> ArrayResource {
+            let res = arrow::compute::kernels::$module::$target(
+                left.reference
+                    .0
+                    .as_any()
+                    .downcast_ref::<StringArray>()
+                    .unwrap(),
+                right,
+            )
+            .unwrap();
+            ArrayResource {
+                reference: ResourceArc::new(XArrayRef(Arc::new(res) as ArrayRef)),
+            }
+        }
+    };
+}

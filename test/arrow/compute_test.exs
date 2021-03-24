@@ -88,4 +88,27 @@ defmodule Arrow.ComputeTest do
        [false, true, true, nil]}
     ]
   end
+
+  test_with_params "compare string array with scalar",
+                   fn left, right, func, expected ->
+                     left_arr = Arrow.array(left)
+
+                     assert Array.to_list(func.(left_arr, right)) == expected,
+                            "failed for #{inspect(func)}"
+                   end do
+    [
+      {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.eq_utf8_scalar/2,
+       [true, false, false, nil]},
+      {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.neq_utf8_scalar/2,
+       [false, true, true, nil]},
+      {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.lt_utf8_scalar/2,
+       [false, false, false, nil]},
+      {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.lt_eq_utf8_scalar/2,
+       [true, false, false, nil]},
+      {["a", "bb", "ccc", nil], "aa", &Arrow.Compute.Comparison.gt_eq_utf8_scalar/2,
+       [false, true, true, nil]},
+      {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.gt_utf8_scalar/2,
+       [false, true, true, nil]}
+    ]
+  end
 end

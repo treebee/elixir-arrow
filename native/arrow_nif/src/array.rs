@@ -302,7 +302,7 @@ fn to_list(arr: ArrayResource) -> ArrayValues {
                 .iter()
                 .map(|s| match s {
                     Some(t) => Some(String::from(t)),
-                    None => Some(String::from("")),
+                    None => None,
                 })
                 .collect(),
         ),
