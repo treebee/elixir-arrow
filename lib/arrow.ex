@@ -94,6 +94,8 @@ defmodule Arrow do
   def array_compute_gt_eq_utf8(_left, _right), do: error()
   def array_compute_lt_utf8(_left, _right), do: error()
   def array_compute_lt_eq_utf8(_left, _right), do: error()
+  def array_compute_like_utf8(_left, _right), do: error()
+  def array_compute_nlike_utf8(_left, _right), do: error()
   def array_compute_eq_scalar(_left, _right), do: error()
   def array_compute_neq_scalar(_left, _right), do: error()
   def array_compute_gt_scalar(_left, _right), do: error()
@@ -107,6 +109,9 @@ defmodule Arrow do
   def array_compute_gt_eq_utf8_scalar(_left, _right), do: error()
   def array_compute_lt_utf8_scalar(_left, _right), do: error()
   def array_compute_lt_eq_utf8_scalar(_left, _right), do: error()
+  def array_compute_like_utf8_scalar(_left, _right), do: error()
+  def array_compute_nlike_utf8_scalar(_left, _right), do: error()
+
   def get_field(), do: error()
 
   def echo_field(_field), do: error()

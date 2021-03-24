@@ -31,6 +31,8 @@ impl_compute_func_utf8!(array_compute_gt_utf8, gt_utf8, comparison);
 impl_compute_func_utf8!(array_compute_gt_eq_utf8, gt_eq_utf8, comparison);
 impl_compute_func_utf8!(array_compute_lt_utf8, lt_utf8, comparison);
 impl_compute_func_utf8!(array_compute_lt_eq_utf8, lt_eq_utf8, comparison);
+impl_compute_func_utf8!(array_compute_like_utf8, like_utf8, comparison);
+impl_compute_func_utf8!(array_compute_nlike_utf8, nlike_utf8, comparison);
 
 impl_compute_func_utf8_scalar!(array_compute_eq_utf8_scalar, eq_utf8_scalar, comparison);
 impl_compute_func_utf8_scalar!(array_compute_neq_utf8_scalar, neq_utf8_scalar, comparison);
@@ -44,5 +46,11 @@ impl_compute_func_utf8_scalar!(array_compute_lt_utf8_scalar, lt_utf8_scalar, com
 impl_compute_func_utf8_scalar!(
     array_compute_lt_eq_utf8_scalar,
     lt_eq_utf8_scalar,
+    comparison
+);
+impl_compute_func_utf8_scalar!(array_compute_like_utf8_scalar, like_utf8_scalar, comparison);
+impl_compute_func_utf8_scalar!(
+    array_compute_nlike_utf8_scalar,
+    nlike_utf8_scalar,
     comparison
 );

@@ -35,7 +35,9 @@ defmodule Arrow.ComputeTest do
                      right_arr = Arrow.array(right)
 
                      assert Array.to_list(func.(left_arr, right_arr)) == expected,
-                            "failed for #{inspect(func)}"
+                            "failed for #{inspect(func)}\nlhs: #{
+                              inspect(Array.to_list(func.(left_arr, right_arr)))
+                            }\nrhs: #{inspect(expected)}"
                    end do
     [
       {[1, 2, 3, nil], [2, 2, 2, 2], &Arrow.Compute.Comparison.eq/2, [false, true, false, nil]},
@@ -53,7 +55,9 @@ defmodule Arrow.ComputeTest do
                      left_arr = Arrow.array(left)
 
                      assert Array.to_list(func.(left_arr, right)) == expected,
-                            "failed for #{inspect(func)}"
+                            "failed for #{inspect(func)}\nlhs: #{
+                              inspect(Array.to_list(func.(left_arr, right)))
+                            }\nrhs: #{inspect(expected)}"
                    end do
     [
       {[1.0, 2, 3, nil], 1.5, &Arrow.Compute.Comparison.eq_scalar/2, [false, false, false, nil]},
@@ -71,7 +75,9 @@ defmodule Arrow.ComputeTest do
                      right_arr = Arrow.array(right)
 
                      assert Array.to_list(func.(left_arr, right_arr)) == expected,
-                            "failed for #{inspect(func)}"
+                            "failed for #{inspect(func)}\nlhs: #{
+                              inspect(Array.to_list(func.(left_arr, right_arr)))
+                            }\nrhs: #{inspect(expected)}"
                    end do
     [
       {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.eq_utf8/2,
@@ -85,7 +91,11 @@ defmodule Arrow.ComputeTest do
       {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.gt_eq_utf8/2,
        [true, true, true, nil]},
       {["a", "bb", "ccc", nil], ["a", "b", "c", "d"], &Arrow.Compute.Comparison.gt_utf8/2,
-       [false, true, true, nil]}
+       [false, true, true, nil]},
+      {["a", "bb", "ccc", nil, "eee"], ["a", "b.", "c%", "d", "e."],
+       &Arrow.Compute.Comparison.like_utf8/2, [true, true, true, nil, false]},
+      {["a", "bb", "ccc", nil, "eee"], ["a", "b.", "c%", "d", "e."],
+       &Arrow.Compute.Comparison.nlike_utf8/2, [false, false, false, nil, true]}
     ]
   end
 
@@ -94,7 +104,9 @@ defmodule Arrow.ComputeTest do
                      left_arr = Arrow.array(left)
 
                      assert Array.to_list(func.(left_arr, right)) == expected,
-                            "failed for #{inspect(func)}"
+                            "failed for #{inspect(func)}\nlhs: #{
+                              inspect(Array.to_list(func.(left_arr, right)))
+                            }\nrhs: #{inspect(expected)}"
                    end do
     [
       {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.eq_utf8_scalar/2,
@@ -108,7 +120,11 @@ defmodule Arrow.ComputeTest do
       {["a", "bb", "ccc", nil], "aa", &Arrow.Compute.Comparison.gt_eq_utf8_scalar/2,
        [false, true, true, nil]},
       {["a", "bb", "ccc", nil], "a", &Arrow.Compute.Comparison.gt_utf8_scalar/2,
-       [false, true, true, nil]}
+       [false, true, true, nil]},
+      {["a", "abb", "accc", nil], "a%", &Arrow.Compute.Comparison.like_utf8_scalar/2,
+       [true, true, true, nil]},
+      {["a", "ab", "accc", nil], "%c", &Arrow.Compute.Comparison.nlike_utf8_scalar/2,
+       [true, true, false, nil]}
     ]
   end
 end
