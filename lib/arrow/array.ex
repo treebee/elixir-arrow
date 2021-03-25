@@ -4,7 +4,7 @@ defmodule Arrow.Array do
   @behaviour Access
 
   def sum(%Arrow.Array{} = array) do
-    Arrow.sum(array)
+    Arrow.array_sum(array)
   end
 
   def len(%Arrow.Array{} = array) do

@@ -56,7 +56,7 @@ defmodule Arrow do
 
   def array_data_type(_arg), do: error()
 
-  def sum(_arg), do: error()
+  def array_sum(_arg), do: error()
 
   def to_list(_arg), do: error()
 
