@@ -13,7 +13,7 @@ use crate::array::{
     array_data_type, array_is_empty, array_is_null, array_is_valid, array_null_count, array_offset,
     array_slice, len, make_array, to_list, XArrayRef,
 };
-use crate::compute::aggregate::array_sum;
+use crate::compute::aggregate::{array_max, array_min, array_sum};
 use crate::compute::arithmetic::{
     array_compute_add, array_compute_divide, array_compute_multiply, array_compute_subtract,
 };
@@ -118,6 +118,8 @@ rustler::init!(
         array_compute_nlike_utf8_scalar,
         make_array,
         array_sum,
+        array_min,
+        array_max,
         len,
         to_list,
         get_schema,

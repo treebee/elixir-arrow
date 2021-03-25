@@ -35,6 +35,16 @@ defmodule Arrow.Test do
     assert Array.sum(arr) == 10.9
   end
 
+  test "get min of array" do
+    arr = Arrow.array([4, 3, 4, 5])
+    assert Array.min(arr) == 3
+  end
+
+  test "get max of array" do
+    arr = Arrow.array([4.5, 6.4], type: {:f, 64})
+    assert Array.max(arr) == 6.4
+  end
+
   test "transform arrow array to list" do
     arr = Arrow.array([4, 5, 3, 4])
     assert Array.to_list(arr) == [4, 5, 3, 4]

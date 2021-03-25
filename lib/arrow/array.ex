@@ -7,6 +7,14 @@ defmodule Arrow.Array do
     Arrow.array_sum(array)
   end
 
+  def min(%Arrow.Array{} = array) do
+    Arrow.array_min(array)
+  end
+
+  def max(%Arrow.Array{} = array) do
+    Arrow.array_max(array)
+  end
+
   def len(%Arrow.Array{} = array) do
     Arrow.len(array)
   end

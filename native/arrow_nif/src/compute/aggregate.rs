@@ -79,3 +79,5 @@ macro_rules! impl_aggregate_func {
 }
 
 impl_aggregate_func!(array_sum, sum);
+impl_aggregate_func!(array_min, min);
+impl_aggregate_func!(array_max, max);
