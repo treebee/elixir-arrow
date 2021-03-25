@@ -11,8 +11,9 @@ mod schema;
 
 use crate::array::{
     array_data_type, array_is_empty, array_is_null, array_is_valid, array_null_count, array_offset,
-    array_slice, len, make_array, sum, to_list, XArrayRef,
+    array_slice, len, make_array, to_list, XArrayRef,
 };
+use crate::compute::aggregate::sum;
 use crate::compute::arithmetic::{
     array_compute_add, array_compute_divide, array_compute_multiply, array_compute_subtract,
 };
