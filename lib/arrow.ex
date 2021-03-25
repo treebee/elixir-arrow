@@ -114,6 +114,7 @@ defmodule Arrow do
   def array_compute_like_utf8_scalar(_left, _right), do: error()
   def array_compute_nlike_utf8_scalar(_left, _right), do: error()
 
+  def array_compute_length(_arg), do: error()
   def get_field(), do: error()
 
   def echo_field(_field), do: error()

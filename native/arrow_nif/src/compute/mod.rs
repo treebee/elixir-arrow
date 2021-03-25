@@ -1,6 +1,7 @@
 pub mod aggregate;
 pub mod arithmetic;
 pub mod comparison;
+pub mod length;
 
 #[macro_export]
 macro_rules! impl_compute_func {

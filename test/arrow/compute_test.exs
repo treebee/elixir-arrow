@@ -127,4 +127,10 @@ defmodule Arrow.ComputeTest do
        [true, true, false, nil]}
     ]
   end
+
+  test "compute string length" do
+    arr = Arrow.array(["Arrow", "Parquet", nil, "hello"])
+    lengths = Arrow.Compute.Length.length(arr)
+    assert Array.to_list(lengths) == [5, 7, nil, 5]
+  end
 end

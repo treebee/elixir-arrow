@@ -28,6 +28,7 @@ use crate::compute::comparison::{
     array_compute_neq_utf8, array_compute_neq_utf8_scalar, array_compute_nlike_utf8,
     array_compute_nlike_utf8_scalar,
 };
+use crate::compute::length::array_compute_length;
 use crate::datafusion::{
     create_datafusion_execution_context, datafusion_execute_sql,
     datafusion_execution_context_register_csv, datafusion_execution_context_register_parquet,
@@ -120,6 +121,7 @@ rustler::init!(
         array_sum,
         array_min,
         array_max,
+        array_compute_length,
         len,
         to_list,
         get_schema,
