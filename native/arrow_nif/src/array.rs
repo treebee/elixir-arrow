@@ -18,6 +18,7 @@ pub struct ArrayResource {
 }
 
 pub enum PrimitiveValue {
+    Boolean(bool),
     Int8(i8),
     Int16(i16),
     Int32(i32),
@@ -28,6 +29,7 @@ pub enum PrimitiveValue {
     UInt64(u64),
     Float32(f32),
     Float64(f64),
+    Utf8(Option<String>),
 }
 
 pub enum ArrayValues {
@@ -58,6 +60,8 @@ impl Encoder for PrimitiveValue {
             PrimitiveValue::UInt64(v) => v.encode(env),
             PrimitiveValue::Float32(v) => v.encode(env),
             PrimitiveValue::Float64(v) => v.encode(env),
+            PrimitiveValue::Utf8(v) => v.encode(env),
+            PrimitiveValue::Boolean(v) => v.encode(env),
         }
     }
 }

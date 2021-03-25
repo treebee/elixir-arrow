@@ -45,6 +45,26 @@ defmodule Arrow.Test do
     assert Array.max(arr) == 6.4
   end
 
+  test "get max of boolean array" do
+    arr = Arrow.array([true, nil, false])
+    assert Array.max(arr) == true
+  end
+
+  test "get min of boolean array" do
+    arr = Arrow.array([true, nil, false])
+    assert Array.min(arr) == false
+  end
+
+  test "get max of string array" do
+    arr = Arrow.array(["arrow", nil, "parquet"])
+    assert Array.max(arr) == "parquet"
+  end
+
+  test "get min of string array" do
+    arr = Arrow.array(["arrow", nil, "parquet"])
+    assert Array.min(arr) == "arrow"
+  end
+
   test "transform arrow array to list" do
     arr = Arrow.array([4, 5, 3, 4])
     assert Array.to_list(arr) == [4, 5, 3, 4]
