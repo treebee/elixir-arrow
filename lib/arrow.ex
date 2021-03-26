@@ -128,7 +128,7 @@ defmodule Arrow do
 
   def get_record_batch(_schema), do: error()
 
-  def print_record_batch(_record_batch), do: error()
+  def debug_record_batch(_record_batch), do: error()
 
   def record_batch(schema, columns) do
     columns =
@@ -170,14 +170,11 @@ defmodule Arrow do
   def datafusion_execution_context_register_csv(_ctx, _table_name, _path), do: error()
   def datafusion_execute_sql(_ctx, _query), do: error()
 
-  #
-  defp is_float_type({:f, _}), do: true
-  defp is_float_type(_), do: false
-
   defp prepare_column(%{data_type: dtype}, column) do
-    cond do
-      is_float_type(dtype) -> Enum.map(column, &to_float/1)
-      true -> column
+    case dtype do
+      {:f, _} -> Enum.map(column, &to_float/1)
+      {:timestamp_us, 64} -> Enum.map(column, &to_timestamp(&1, :us))
+      _ -> column
     end
   end
 

@@ -1,16 +1,11 @@
 use crate::array::ArrayValues;
 use crate::schema::XSchema;
-use arrow::array::Float32Array;
-use arrow::array::Int16Array;
-use arrow::array::Int32Array;
-use arrow::array::Int8Array;
-use arrow::array::StringArray;
-use arrow::array::UInt16Array;
-use arrow::array::UInt32Array;
-use arrow::array::UInt64Array;
-use arrow::array::UInt8Array;
 use arrow::array::{ArrayRef, Float64Array, Int64Array};
-use arrow::datatypes::DataType;
+use arrow::array::{
+    Float32Array, Int16Array, Int32Array, Int8Array, StringArray, TimestampMicrosecondArray,
+    UInt16Array, UInt32Array, UInt64Array, UInt8Array,
+};
+use arrow::datatypes::{DataType, TimeUnit};
 use arrow::record_batch::RecordBatch;
 use rustler::Encoder;
 use rustler::Env;
@@ -23,9 +18,9 @@ pub struct RecordBatchResource(pub RecordBatch);
 pub struct RecordBatchStruct(HashMap<String, ArrayValues>);
 
 #[rustler::nif]
-fn print_record_batch(table: ResourceArc<RecordBatchResource>) {
-    let t = &table.0;
-    println!("{:?}", t);
+fn debug_record_batch(table: ResourceArc<RecordBatchResource>) -> String {
+    let t = format!("{:?}", table.0);
+    t
 }
 
 #[rustler::nif]
@@ -73,8 +68,13 @@ fn make_record_batch<'a>(
                     .collect();
                 cols.push(Arc::new(StringArray::from(values)));
             }
-
-            _ => println!("no match"),
+            DataType::Timestamp(TimeUnit::Microsecond, _) => {
+                cols.push(Arc::new(TimestampMicrosecondArray::from_opt_vec(
+                    columns[idx].decode::<Vec<Option<i64>>>().unwrap(),
+                    None,
+                )))
+            }
+            dtype => panic!("Datatype {} not supported yet", dtype),
         }
     }
     ResourceArc::new(RecordBatchResource(

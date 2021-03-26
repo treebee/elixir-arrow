@@ -30,30 +30,16 @@ defmodule Arrow.RecordBatch do
     Arrow.Schema.new(fields)
   end
 
+  def debug(record_batch), do: Arrow.debug_record_batch(record_batch.reference)
+
   def to_map(record_batch), do: Arrow.record_batch_to_map(record_batch.reference)
 
   defp ensure_string_names(%Field{name: name} = field) when is_binary(name), do: field
   defp ensure_string_names(%Field{name: name} = field), do: %{field | name: Atom.to_string(name)}
 
   defimpl Inspect, for: Arrow.RecordBatch do
-    import Inspect.Algebra
-
     def inspect(record_batch, _opts) do
-      schema = Arrow.RecordBatch.schema(record_batch)
-      cols = for field <- schema.fields, do: "#{field.name}:  #{type_str(field.data_type)}"
-      concat(["#Arrow.RecordBatch\n", "#{Enum.join(cols, "\n")}"])
+      Arrow.RecordBatch.debug(record_batch)
     end
-
-    defp type_str({:s, 8}), do: "Int8"
-    defp type_str({:s, 16}), do: "Int16"
-    defp type_str({:s, 32}), do: "Int32"
-    defp type_str({:s, 64}), do: "Int64"
-    defp type_str({:u, 8}), do: "UInt8"
-    defp type_str({:u, 16}), do: "UInt16"
-    defp type_str({:u, 32}), do: "UInt32"
-    defp type_str({:u, 64}), do: "UInt64"
-    defp type_str({:f, 32}), do: "Float32"
-    defp type_str({:f, 64}), do: "Float64"
-    defp type_str({:utf8, 32}), do: "String"
   end
 end

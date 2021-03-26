@@ -40,7 +40,7 @@ use crate::parquet::{
     RecordBatchesResource,
 };
 use crate::record_batch::{
-    get_schema, make_record_batch, print_record_batch, record_batch_to_map, RecordBatchResource,
+    debug_record_batch, get_schema, make_record_batch, record_batch_to_map, RecordBatchResource,
 };
 
 mod atoms {
@@ -127,7 +127,7 @@ rustler::init!(
         len,
         to_list,
         get_schema,
-        print_record_batch,
+        debug_record_batch,
         make_record_batch,
         parquet_reader,
         parquet_reader_arrow_schema,
