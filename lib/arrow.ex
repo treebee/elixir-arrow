@@ -55,6 +55,8 @@ defmodule Arrow do
     make_array(arr, type)
   end
 
+  def array_debug(_arg), do: error()
+
   def array_data_type(_arg), do: error()
 
   def array_sum(_arg), do: error()

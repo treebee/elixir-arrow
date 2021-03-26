@@ -60,27 +60,14 @@ defmodule Arrow.Array do
     raise "Access.pop/2 not implemented for Arrow.Array"
   end
 
+  def debug(%Arrow.Array{} = array), do: Arrow.array_debug(array)
+
   defp unix_to_datetime(nil, _), do: nil
   defp unix_to_datetime(ts, precision), do: DateTime.from_unix!(ts, precision)
 end
 
 defimpl Inspect, for: Arrow.Array do
   def inspect(array, _opts) do
-    "#Arrow.#{type_str(Arrow.Array.data_type(array))}Array\n" <>
-      "#{inspect(Arrow.Array.to_list(array))}"
+    Arrow.Array.debug(array)
   end
-
-  defp type_str({:s, 8}), do: "Int8"
-  defp type_str({:s, 16}), do: "Int16"
-  defp type_str({:s, 32}), do: "Int32"
-  defp type_str({:s, 64}), do: "Int64"
-  defp type_str({:u, 1}), do: "Boolean"
-  defp type_str({:u, 8}), do: "UInt8"
-  defp type_str({:u, 16}), do: "UInt16"
-  defp type_str({:u, 32}), do: "UInt32"
-  defp type_str({:u, 64}), do: "UInt64"
-  defp type_str({:f, 32}), do: "Float32"
-  defp type_str({:f, 64}), do: "Float64"
-  defp type_str({:utf8, 32}), do: "String"
-  defp type_str({:timestamp_us, 64}), do: "TimestampMicrosecond"
 end

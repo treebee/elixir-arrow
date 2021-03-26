@@ -10,8 +10,8 @@ mod record_batch;
 mod schema;
 
 use crate::array::{
-    array_data_type, array_is_empty, array_is_null, array_is_valid, array_null_count, array_offset,
-    array_slice, len, make_array, to_list, XArrayRef,
+    array_data_type, array_debug, array_is_empty, array_is_null, array_is_valid, array_null_count,
+    array_offset, array_slice, len, make_array, to_list, XArrayRef,
 };
 use crate::compute::aggregate::{array_max, array_min, array_sum};
 use crate::compute::arithmetic::{
@@ -123,6 +123,7 @@ rustler::init!(
         array_min,
         array_max,
         array_compute_length,
+        array_debug,
         len,
         to_list,
         get_schema,

@@ -376,3 +376,9 @@ fn array_is_null(arr: ArrayResource, index: usize) -> bool {
 fn array_null_count(arr: ArrayResource) -> usize {
     arr.reference.0.null_count()
 }
+
+#[rustler::nif]
+fn array_debug(arr: ArrayResource) -> String {
+    let debug_string = format!("{:?}", arr.reference.0);
+    debug_string
+}
