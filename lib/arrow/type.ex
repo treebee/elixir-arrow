@@ -26,6 +26,8 @@ defmodule Arrow.Type do
           | {:f, 64}
           # {:utf8, 32} is for a GenericStringArray<i32> on Rust side
           | {:utf8, 32}
+          # Timestamp(Microsecond, None)
+          | {:timestamp_us, 64}
 
   @doc """
   Returns the minimum possible value for the given type.
@@ -87,10 +89,12 @@ defmodule Arrow.Type do
       1 -> {:s, 64}
       2 -> {:f, 32}
       {:utf8, 32} -> {:utf8, 32}
+      {:timestamp_us, 64} -> {:timestamp_us, 64}
     end
   end
 
   defp infer(arg, _inferred) when is_binary(arg), do: {:utf8, 32}
+  defp infer(%DateTime{} = _arg, _inferred), do: {:timestamp_us, 64}
   defp infer(arg, inferred) when is_list(arg), do: Enum.reduce(arg, inferred, &infer/2)
   defp infer(arg, inferred) when is_boolean(arg), do: max(inferred, 0)
   defp infer(arg, inferred) when is_integer(arg), do: max(inferred, 1)
@@ -126,6 +130,7 @@ defmodule Arrow.Type do
   defp validate({:u, size} = type) when size in [1, 8, 16, 32, 64], do: type
   defp validate({:f, size} = type) when size in [32, 64], do: type
   defp validate({:utf8, size} = type) when size in [32, 64], do: type
+  defp validate({:timestamp_us, size} = type) when size in [64], do: type
   defp validate({:bf, size} = type) when size in [16], do: type
   defp validate(_type), do: :error
 end

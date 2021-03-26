@@ -57,6 +57,7 @@ mod atoms {
         f,
         u,
         utf8,
+        timestamp_us,
     }
 }
 

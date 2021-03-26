@@ -48,6 +48,7 @@ defmodule Arrow do
         {:u, 1} -> Enum.map(arg, &to_bool/1)
         {:u, _} -> Enum.map(arg, &to_int/1)
         {:s, _} -> Enum.map(arg, &to_int/1)
+        {:timestamp_us, _} -> Enum.map(arg, &to_timestamp(&1, :us))
         _ -> arg
       end
 
@@ -190,6 +191,12 @@ defmodule Arrow do
 
   defp to_bool(x) do
     raise "Invalid value for boolean array: #{x}"
+  end
+
+  defp to_timestamp(nil, _), do: nil
+
+  defp to_timestamp(%DateTime{} = dt, :us) do
+    DateTime.to_unix(dt, :microsecond)
   end
 
   defp to_int(nil), do: nil

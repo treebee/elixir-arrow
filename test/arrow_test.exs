@@ -28,6 +28,12 @@ defmodule Arrow.Test do
     assert is_reference(arr.reference)
   end
 
+  test "create timestamp(microsecond) array" do
+    dt = DateTime.utc_now()
+    arr = Arrow.array([dt, nil])
+    assert Array.to_list(arr) == [dt, nil]
+  end
+
   test "calculates sum of array" do
     arr = Arrow.array([4, 3, 4, 5])
     assert Array.sum(arr) == 16

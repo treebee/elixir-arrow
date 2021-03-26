@@ -20,7 +20,12 @@ defmodule Arrow.Array do
   end
 
   def to_list(%Arrow.Array{} = array) do
-    Arrow.to_list(array)
+    values = Arrow.to_list(array)
+
+    case Arrow.Array.data_type(array) do
+      {:timestamp_us, 64} -> values |> Enum.map(&unix_to_datetime(&1, :microsecond))
+      _ -> values
+    end
   end
 
   def slice(%Arrow.Array{} = array, offset, length) do
@@ -54,6 +59,9 @@ defmodule Arrow.Array do
   def pop(_array, _key) do
     raise "Access.pop/2 not implemented for Arrow.Array"
   end
+
+  defp unix_to_datetime(nil, _), do: nil
+  defp unix_to_datetime(ts, precision), do: DateTime.from_unix!(ts, precision)
 end
 
 defimpl Inspect, for: Arrow.Array do
@@ -74,4 +82,5 @@ defimpl Inspect, for: Arrow.Array do
   defp type_str({:f, 32}), do: "Float32"
   defp type_str({:f, 64}), do: "Float64"
   defp type_str({:utf8, 32}), do: "String"
+  defp type_str({:timestamp_us, 64}), do: "TimestampMicrosecond"
 end
