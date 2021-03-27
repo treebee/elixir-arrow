@@ -3,6 +3,7 @@ defmodule Arrow.Parquet.File do
   defstruct [:path, :reader]
 
   alias Arrow.Parquet.Reader
+  alias Arrow.Native
 
   def open(path) do
     reader = Reader.new(path)

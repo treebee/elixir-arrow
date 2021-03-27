@@ -37,7 +37,7 @@ defmodule Arrow do
   """
   @doc type: :creation
   def array(arg, opts \\ [])
-  # arrow functions
+
   def array(arg, opts) do
     type = Arrow.Type.normalize!(opts[:type] || Arrow.Type.infer(arg))
 
