@@ -111,12 +111,16 @@ defmodule Arrow.Test do
       RecordBatch.new(%{
         date: [~D[2020-01-01], ~D[2020-01-02], nil, Date.utc_today()],
         col1: [1, 3, nil, 4],
-        col2: [5.43, 4.5, nil, nil]
+        col2: [5.43, 4.5, nil, nil],
+        datetime: [DateTime.utc_now(), nil, nil, nil]
       })
 
     assert is_reference(table.reference)
     schema = RecordBatch.schema(table)
-    assert length(schema.fields) == 3
+    assert length(schema.fields) == 4
+    rb = RecordBatch.to_map(table)
+    assert is_struct(Map.get(rb, "datetime") |> List.first())
+    assert is_struct(Map.get(rb, "date") |> List.first())
   end
 
   test "create slice of array" do

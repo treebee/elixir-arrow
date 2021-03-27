@@ -1,6 +1,8 @@
 defmodule Arrow.Array do
   defstruct [:reference]
 
+  alias Arrow.Conversion
+
   @behaviour Access
 
   def sum(%Arrow.Array{} = array) do
@@ -23,8 +25,8 @@ defmodule Arrow.Array do
     values = Arrow.to_list(array)
 
     case Arrow.Array.data_type(array) do
-      {:timestamp_us, 64} -> values |> Enum.map(&unix_to_datetime(&1, :microsecond))
-      {:date, 32} -> values |> Enum.map(&days_to_date/1)
+      {:timestamp_us, 64} -> values |> Enum.map(&Conversion.unix_to_datetime(&1, :microsecond))
+      {:date, 32} -> values |> Enum.map(&Conversion.days_to_date/1)
       _ -> values
     end
   end
@@ -62,12 +64,6 @@ defmodule Arrow.Array do
   end
 
   def debug(%Arrow.Array{} = array), do: Arrow.array_debug(array)
-
-  defp unix_to_datetime(nil, _), do: nil
-  defp unix_to_datetime(ts, precision), do: DateTime.from_unix!(ts, precision)
-
-  defp days_to_date(nil), do: nil
-  defp days_to_date(days), do: Date.add(~D[1970-01-01], days)
 end
 
 defimpl Inspect, for: Arrow.Array do

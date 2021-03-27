@@ -1,6 +1,8 @@
 defmodule Arrow.RecordBatch do
-  alias Arrow.Field
   defstruct [:reference]
+
+  alias Arrow.Conversion
+  alias Arrow.Field
 
   def new(columns) do
     schema = create_schema(columns)
@@ -33,7 +35,25 @@ defmodule Arrow.RecordBatch do
   def debug(record_batch), do: Arrow.debug_record_batch(record_batch.reference)
 
   # TODO: correct representation of dates and datetimes
-  def to_map(record_batch), do: Arrow.record_batch_to_map(record_batch.reference)
+  def to_map(record_batch) do
+    schema = schema(record_batch)
+    rb = Arrow.record_batch_to_map(record_batch.reference)
+
+    for field <- schema.fields, into: [] do
+      case field.data_type do
+        {:date, 32} ->
+          {field.name, Map.get(rb, field.name) |> Enum.map(&Conversion.days_to_date/1)}
+
+        {:timestamp_us, 64} ->
+          {field.name,
+           Map.get(rb, field.name) |> Enum.map(&Conversion.unix_to_datetime(&1, :microsecond))}
+
+        _ ->
+          {field.name, Map.get(rb, field.name)}
+      end
+    end
+    |> Map.new()
+  end
 
   defp ensure_string_names(%Field{name: name} = field) when is_binary(name), do: field
   defp ensure_string_names(%Field{name: name} = field), do: %{field | name: Atom.to_string(name)}
