@@ -22,7 +22,7 @@ fn query_parquet(
     let mut ctx = ExecutionContext::new();
     ctx.register_parquet(table.as_str(), path.as_str()).unwrap();
     let df = ctx.sql(query.as_str()).unwrap();
-    let mut rt = Runtime::new().unwrap();
+    let rt = Runtime::new().unwrap();
     let results: Vec<RecordBatch> = { rt.block_on(async { fetch_results(df).await }) };
     let mut batch_resources = Vec::new();
     for batch in results {
@@ -68,7 +68,7 @@ fn datafusion_execute_sql(
 ) -> Vec<ResourceArc<RecordBatchResource>> {
     let mut context = ctx.0.lock().unwrap();
     let df = context.sql(query.as_str()).unwrap();
-    let mut rt = Runtime::new().unwrap();
+    let rt = Runtime::new().unwrap();
     let results: Vec<RecordBatch> = { rt.block_on(async { fetch_results(df).await }) };
     let mut batch_resources = Vec::new();
     for batch in results {

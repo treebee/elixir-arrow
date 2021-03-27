@@ -204,7 +204,7 @@ fn make_array(a: Term, b: XDataType) -> ArrayResource {
                 ) as ArrayRef)),
             }
         }
-        DataType::Date32(_) => {
+        DataType::Date32 => {
             let values: Vec<Option<i32>> = a.decode().unwrap();
             ArrayResource {
                 reference: ResourceArc::new(XArrayRef(
@@ -340,7 +340,7 @@ fn to_list(arr: ArrayResource) -> ArrayValues {
                 .into_iter()
                 .collect(),
         ),
-        DataType::Date32(_) => ArrayValues::Date32(
+        DataType::Date32 => ArrayValues::Date32(
             arr.reference
                 .0
                 .as_any()

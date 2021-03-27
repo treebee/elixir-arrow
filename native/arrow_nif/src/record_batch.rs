@@ -74,7 +74,7 @@ fn make_record_batch<'a>(
                     None,
                 )))
             }
-            DataType::Date32(_) => cols.push(Arc::new(Date32Array::from(
+            DataType::Date32 => cols.push(Arc::new(Date32Array::from(
                 columns[idx].decode::<Vec<Option<i32>>>().unwrap(),
             ))),
             dtype => panic!("Datatype {} not supported yet", dtype),
@@ -190,7 +190,7 @@ fn record_batch_to_map(record_batch: ResourceArc<RecordBatchResource>) -> Record
                     .into_iter()
                     .collect(),
             ),
-            DataType::Date32(_) => ArrayValues::Date32(
+            DataType::Date32 => ArrayValues::Date32(
                 column
                     .downcast_ref::<Date32Array>()
                     .unwrap()
