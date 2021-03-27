@@ -33,6 +33,7 @@ impl Encoder for XDataType {
             DataType::Timestamp(TimeUnit::Microsecond, _) => {
                 (atoms::timestamp_us(), 64).encode(env)
             }
+            DataType::Timestamp(TimeUnit::Nanosecond, _) => (atoms::timestamp_ns(), 64).encode(env),
             DataType::Date32 => (atoms::date(), 32).encode(env),
             _ => (atoms::error(), 0).encode(env),
         }
