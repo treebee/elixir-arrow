@@ -32,6 +32,7 @@ defmodule Arrow.RecordBatch do
 
   def debug(record_batch), do: Arrow.debug_record_batch(record_batch.reference)
 
+  # TODO: correct representation of dates and datetimes
   def to_map(record_batch), do: Arrow.record_batch_to_map(record_batch.reference)
 
   defp ensure_string_names(%Field{name: name} = field) when is_binary(name), do: field

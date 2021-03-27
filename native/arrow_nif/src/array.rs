@@ -1,8 +1,8 @@
 use crate::datatype::XDataType;
 use arrow::array::{
-    ArrayRef, BooleanArray, Float32Array, Float64Array, Int16Array, Int32Array, Int64Array,
-    Int8Array, StringArray, TimestampMicrosecondArray, UInt16Array, UInt32Array, UInt64Array,
-    UInt8Array,
+    ArrayRef, BooleanArray, Date32Array, Float32Array, Float64Array, Int16Array, Int32Array,
+    Int64Array, Int8Array, StringArray, TimestampMicrosecondArray, UInt16Array, UInt32Array,
+    UInt64Array, UInt8Array,
 };
 use arrow::datatypes::{DataType, TimeUnit};
 use rustler::Env;
@@ -47,6 +47,7 @@ pub enum ArrayValues {
     Float64(Vec<Option<f64>>),
     Utf8(Vec<Option<String>>),
     Timestamp(Vec<Option<i64>>),
+    Date32(Vec<Option<i32>>),
 }
 
 impl Encoder for PrimitiveValue {
@@ -84,6 +85,7 @@ impl Encoder for ArrayValues {
             ArrayValues::Float64(v) => v.encode(env),
             ArrayValues::Utf8(v) => v.encode(env),
             ArrayValues::Timestamp(v) => v.encode(env),
+            ArrayValues::Date32(v) => v.encode(env),
         }
     }
 }
@@ -200,6 +202,14 @@ fn make_array(a: Term, b: XDataType) -> ArrayResource {
                 reference: ResourceArc::new(XArrayRef(Arc::new(
                     TimestampMicrosecondArray::from_opt_vec(values, None),
                 ) as ArrayRef)),
+            }
+        }
+        DataType::Date32(_) => {
+            let values: Vec<Option<i32>> = a.decode().unwrap();
+            ArrayResource {
+                reference: ResourceArc::new(XArrayRef(
+                    Arc::new(Date32Array::from(values)) as ArrayRef
+                )),
             }
         }
         dtype => panic!("arrays with datatype {} not supported", dtype),
@@ -326,6 +336,15 @@ fn to_list(arr: ArrayResource) -> ArrayValues {
                 .0
                 .as_any()
                 .downcast_ref::<TimestampMicrosecondArray>()
+                .unwrap()
+                .into_iter()
+                .collect(),
+        ),
+        DataType::Date32(_) => ArrayValues::Date32(
+            arr.reference
+                .0
+                .as_any()
+                .downcast_ref::<Date32Array>()
                 .unwrap()
                 .into_iter()
                 .collect(),

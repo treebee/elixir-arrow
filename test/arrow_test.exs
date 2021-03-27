@@ -34,6 +34,12 @@ defmodule Arrow.Test do
     assert Array.to_list(arr) == [dt, nil]
   end
 
+  test "create date array" do
+    dt = Date.utc_today()
+    arr = Arrow.array([dt, nil])
+    assert Array.to_list(arr) == [dt, nil]
+  end
+
   test "calculates sum of array" do
     arr = Arrow.array([4, 3, 4, 5])
     assert Array.sum(arr) == 16
@@ -101,12 +107,16 @@ defmodule Arrow.Test do
   end
 
   test "infer schema for new table" do
-    table = RecordBatch.new(%{col1: [1, 3, nil, 4], col2: [5.43, 4.5, nil, nil]})
+    table =
+      RecordBatch.new(%{
+        date: [~D[2020-01-01], ~D[2020-01-02], nil, Date.utc_today()],
+        col1: [1, 3, nil, 4],
+        col2: [5.43, 4.5, nil, nil]
+      })
+
     assert is_reference(table.reference)
     schema = RecordBatch.schema(table)
-    [field1, field2] = schema.fields
-    assert field1.name == "col1"
-    assert field2.name == "col2"
+    assert length(schema.fields) == 3
   end
 
   test "create slice of array" do

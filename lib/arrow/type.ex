@@ -28,6 +28,8 @@ defmodule Arrow.Type do
           | {:utf8, 32}
           # Timestamp(Microsecond, None)
           | {:timestamp_us, 64}
+          # Date(Days)
+          | {:date, 32}
 
   @doc """
   Returns the minimum possible value for the given type.
@@ -90,11 +92,13 @@ defmodule Arrow.Type do
       2 -> {:f, 32}
       {:utf8, 32} -> {:utf8, 32}
       {:timestamp_us, 64} -> {:timestamp_us, 64}
+      {:date, 32} -> {:date, 32}
     end
   end
 
   defp infer(arg, _inferred) when is_binary(arg), do: {:utf8, 32}
   defp infer(%DateTime{} = _arg, _inferred), do: {:timestamp_us, 64}
+  defp infer(%Date{} = _arg, _inferred), do: {:date, 32}
   defp infer(arg, inferred) when is_list(arg), do: Enum.reduce(arg, inferred, &infer/2)
   defp infer(arg, inferred) when is_boolean(arg), do: max(inferred, 0)
   defp infer(arg, inferred) when is_integer(arg), do: max(inferred, 1)
@@ -131,6 +135,7 @@ defmodule Arrow.Type do
   defp validate({:f, size} = type) when size in [32, 64], do: type
   defp validate({:utf8, size} = type) when size in [32, 64], do: type
   defp validate({:timestamp_us, size} = type) when size in [64], do: type
+  defp validate({:date, size} = type) when size in [32], do: type
   defp validate({:bf, size} = type) when size in [16], do: type
   defp validate(_type), do: :error
 end

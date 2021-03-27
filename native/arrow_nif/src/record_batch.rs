@@ -2,8 +2,8 @@ use crate::array::ArrayValues;
 use crate::schema::XSchema;
 use arrow::array::{ArrayRef, Float64Array, Int64Array};
 use arrow::array::{
-    Float32Array, Int16Array, Int32Array, Int8Array, StringArray, TimestampMicrosecondArray,
-    UInt16Array, UInt32Array, UInt64Array, UInt8Array,
+    Date32Array, Float32Array, Int16Array, Int32Array, Int8Array, StringArray,
+    TimestampMicrosecondArray, UInt16Array, UInt32Array, UInt64Array, UInt8Array,
 };
 use arrow::datatypes::{DataType, TimeUnit};
 use arrow::record_batch::RecordBatch;
@@ -74,6 +74,9 @@ fn make_record_batch<'a>(
                     None,
                 )))
             }
+            DataType::Date32(_) => cols.push(Arc::new(Date32Array::from(
+                columns[idx].decode::<Vec<Option<i32>>>().unwrap(),
+            ))),
             dtype => panic!("Datatype {} not supported yet", dtype),
         }
     }
@@ -180,8 +183,21 @@ fn record_batch_to_map(record_batch: ResourceArc<RecordBatchResource>) -> Record
                 }
                 ArrayValues::Utf8(values)
             }
-            // TODO error handling
-            _ => ArrayValues::Int64(vec![]),
+            DataType::Timestamp(_, _) => ArrayValues::Timestamp(
+                column
+                    .downcast_ref::<TimestampMicrosecondArray>()
+                    .unwrap()
+                    .into_iter()
+                    .collect(),
+            ),
+            DataType::Date32(_) => ArrayValues::Date32(
+                column
+                    .downcast_ref::<Date32Array>()
+                    .unwrap()
+                    .into_iter()
+                    .collect(),
+            ),
+            dtype => panic!("DataType {:?} not supported", dtype),
         };
         ret.insert(field.name().clone(), array_values);
     }

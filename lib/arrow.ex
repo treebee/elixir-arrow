@@ -49,6 +49,7 @@ defmodule Arrow do
         {:u, _} -> Enum.map(arg, &to_int/1)
         {:s, _} -> Enum.map(arg, &to_int/1)
         {:timestamp_us, _} -> Enum.map(arg, &to_timestamp(&1, :us))
+        {:date, 32} -> Enum.map(arg, &to_days/1)
         _ -> arg
       end
 
@@ -174,6 +175,7 @@ defmodule Arrow do
     case dtype do
       {:f, _} -> Enum.map(column, &to_float/1)
       {:timestamp_us, 64} -> Enum.map(column, &to_timestamp(&1, :us))
+      {:date, 32} -> Enum.map(column, &to_days/1)
       _ -> column
     end
   end
@@ -191,6 +193,9 @@ defmodule Arrow do
   defp to_bool(x) do
     raise "Invalid value for boolean array: #{x}"
   end
+
+  defp to_days(nil), do: nil
+  defp to_days(%Date{} = d), do: Date.diff(d, ~D[1970-01-01])
 
   defp to_timestamp(nil, _), do: nil
 

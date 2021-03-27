@@ -1,5 +1,5 @@
 use crate::atoms;
-use arrow::datatypes::{DataType, TimeUnit};
+use arrow::datatypes::{DataType, DateUnit, TimeUnit};
 use rustler::{Atom, Decoder, Encoder, Env, NifResult, Term};
 
 #[derive(Debug)]
@@ -33,6 +33,7 @@ impl Encoder for XDataType {
             DataType::Timestamp(TimeUnit::Microsecond, _) => {
                 (atoms::timestamp_us(), 64).encode(env)
             }
+            DataType::Date32(DateUnit::Day) => (atoms::date(), 32).encode(env),
             _ => (atoms::error(), 0).encode(env),
         }
     }
@@ -71,6 +72,11 @@ fn convert_to_datatype(term: Term) -> Option<XDataType> {
     } else if t == atoms::timestamp_us() {
         match s {
             64 => Some(XDataType(DataType::Timestamp(TimeUnit::Microsecond, None))),
+            _ => None,
+        }
+    } else if t == atoms::date() {
+        match s {
+            32 => Some(XDataType(DataType::Date32(DateUnit::Day))),
             _ => None,
         }
     } else {
