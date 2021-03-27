@@ -4,6 +4,7 @@ defmodule Arrow.ComputeTest do
 
   alias Arrow.Array
   alias Arrow.Compute.Arithmetic
+  alias Arrow.Native
 
   test "add arrays" do
     a = Arrow.array([1, 2, 3])

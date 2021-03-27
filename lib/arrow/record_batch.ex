@@ -22,7 +22,7 @@ defmodule Arrow.RecordBatch do
     Arrow.record_batch(schema, columns)
   end
 
-  def schema(record_batch), do: Arrow.get_schema(record_batch.reference)
+  def schema(record_batch), do: Arrow.Native.get_schema(record_batch.reference)
 
   def create_schema(columns) do
     fields =
@@ -32,12 +32,12 @@ defmodule Arrow.RecordBatch do
     Arrow.Schema.new(fields)
   end
 
-  def debug(record_batch), do: Arrow.debug_record_batch(record_batch.reference)
+  def debug(record_batch), do: Arrow.Native.debug_record_batch(record_batch.reference)
 
   # TODO: correct representation of dates and datetimes
   def to_map(record_batch) do
     schema = schema(record_batch)
-    rb = Arrow.record_batch_to_map(record_batch.reference)
+    rb = Arrow.Native.record_batch_to_map(record_batch.reference)
 
     for field <- schema.fields, into: [] do
       case field.data_type do

@@ -17,6 +17,6 @@ defmodule Arrow.Parquet.File do
     )
   end
 
-  def schema(%{reader: reader}), do: Arrow.parquet_schema(reader.reference)
+  def schema(%{reader: reader}), do: Native.parquet_schema(reader.reference)
   def schema_arrow(%Arrow.Parquet.File{reader: reader}), do: Reader.schema_arrow(reader)
 end

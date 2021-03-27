@@ -79,7 +79,7 @@ fn load(env: Env, _: Term) -> bool {
 }
 
 rustler::init!(
-    "Elixir.Arrow",
+    "Elixir.Arrow.Native",
     [
         array_data_type,
         array_is_empty,

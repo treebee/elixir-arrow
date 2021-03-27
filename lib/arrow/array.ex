@@ -2,29 +2,30 @@ defmodule Arrow.Array do
   defstruct [:reference]
 
   alias Arrow.Conversion
+  alias Arrow.Native
 
   @behaviour Access
 
   def sum(%Arrow.Array{} = array) do
-    Arrow.array_sum(array)
+    Native.array_sum(array)
   end
 
   def min(%Arrow.Array{} = array) do
-    Arrow.array_min(array)
+    Native.array_min(array)
   end
 
   def max(%Arrow.Array{} = array) do
-    Arrow.array_max(array)
+    Native.array_max(array)
   end
 
   def len(%Arrow.Array{} = array) do
-    Arrow.len(array)
+    Native.len(array)
   end
 
   def to_list(%Arrow.Array{} = array) do
-    values = Arrow.to_list(array)
+    values = Native.to_list(array)
 
-    case Arrow.Array.data_type(array) do
+    case data_type(array) do
       {:timestamp_us, 64} -> values |> Enum.map(&Conversion.unix_to_datetime(&1, :microsecond))
       {:date, 32} -> values |> Enum.map(&Conversion.days_to_date/1)
       _ -> values
@@ -32,19 +33,19 @@ defmodule Arrow.Array do
   end
 
   def slice(%Arrow.Array{} = array, offset, length) do
-    Arrow.array_slice(array, offset, length)
+    Native.array_slice(array, offset, length)
   end
 
-  def offset(%Arrow.Array{} = array), do: Arrow.array_offset(array)
+  def offset(%Arrow.Array{} = array), do: Native.array_offset(array)
 
-  def is_null(%Arrow.Array{} = array, idx), do: Arrow.array_is_null(array, idx)
+  def is_null(%Arrow.Array{} = array, idx), do: Native.array_is_null(array, idx)
 
-  def is_valid(%Arrow.Array{} = array, idx), do: Arrow.array_is_valid(array, idx)
+  def is_valid(%Arrow.Array{} = array, idx), do: Native.array_is_valid(array, idx)
 
-  def null_count(%Arrow.Array{} = array), do: Arrow.array_null_count(array)
+  def null_count(%Arrow.Array{} = array), do: Native.array_null_count(array)
 
-  def is_empty(%Arrow.Array{} = array), do: Arrow.array_is_empty(array)
-  def data_type(%Arrow.Array{} = array), do: Arrow.array_data_type(array)
+  def is_empty(%Arrow.Array{} = array), do: Native.array_is_empty(array)
+  def data_type(%Arrow.Array{} = array), do: Native.array_data_type(array)
 
   @impl true
   def fetch(%Arrow.Array{} = array, _.._ = range),
@@ -63,7 +64,7 @@ defmodule Arrow.Array do
     raise "Access.pop/2 not implemented for Arrow.Array"
   end
 
-  def debug(%Arrow.Array{} = array), do: Arrow.array_debug(array)
+  def debug(%Arrow.Array{} = array), do: Native.array_debug(array)
 end
 
 defimpl Inspect, for: Arrow.Array do
