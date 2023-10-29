@@ -1,8 +1,9 @@
 use crate::record_batch::RecordBatchResource;
 use crate::schema::XSchema;
-use parquet::arrow::arrow_reader::ParquetRecordBatchReader;
+use parquet::arrow::arrow_reader::{ParquetRecordBatchReader, ParquetRecordBatchReaderBuilder};
 use parquet::arrow::arrow_writer::ArrowWriter;
-use parquet::arrow::{ArrowReader, ParquetFileArrowReader};
+//use parquet::arrow::{ArrowReader, ParquetFileArrowReader};
+use parquet::arrow::arrow_reader::ArrowReaderBuilder;
 use parquet::basic::Compression;
 use parquet::file::properties::WriterProperties;
 use parquet::file::reader::{FileReader, SerializedFileReader};
@@ -17,11 +18,18 @@ pub struct RecordBatchesResource(pub Vec<RecordBatchResource>);
 unsafe impl Send for ParquetRecordBatchReaderResource {}
 unsafe impl Sync for ParquetRecordBatchReaderResource {}
 
+// #[rustler::nif]
+// fn parquet_reader_old(path: String) -> ResourceArc<ParquetReaderResource> {
+//     let file = File::open(path).unwrap();
+//     let file_reader = SerializedFileReader::new(file).unwrap();
+//     ResourceArc::new(ParquetReaderResource(Arc::new(file_reader)))
+// }
+
 #[rustler::nif]
 fn parquet_reader(path: String) -> ResourceArc<ParquetReaderResource> {
-    let file = File::open(path).unwrap();
-    let file_reader = SerializedFileReader::new(file).unwrap();
-    ResourceArc::new(ParquetReaderResource(Arc::new(file_reader)))
+    let mut builder = ParquetRecordBatchReaderBuilder::try_new(path).unwrap();
+    let mut reader: ParquetRecordBatchReader = builder.with_row_groups(vec![0]).build().unwrap();
+    ResourceArc::new(ParquetReaderResource(Arc::new(reader)))
 }
 
 #[rustler::nif]
